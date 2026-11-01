@@ -296,6 +296,10 @@ FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more de
 In plain words: AI Bridge is free software under the **GNU General Public License v3.0** (see [LICENSE](LICENSE)): you can use, change and
 share it, and if you share a changed version, it has to stay under GPL-3.0 with its source code available.
 
+The Windows installer also contains libraries by other people (Python, PyInstaller, the Anthropic and OpenAI SDKs, discord.py,
+pywebview, pystray, Pillow and others). Each keeps its own license; they're listed with their full license texts in
+`THIRD-PARTY-NOTICES.txt`, installed next to the app (generated at build time by `packaging/make_notices.py`).
+
 AI Bridge works with Claude, ChatGPT and the other AIs and apps it connects to, but it isn't made by or affiliated with
 Anthropic, OpenAI or any of them.
 
