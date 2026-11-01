@@ -44,6 +44,7 @@ Name: "ollama"; Description: "Ollama  (free AIs that run on your PC; optional)";
 
 [Files]
 Source: "..\dist\AI Bridge\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\LICENSE"; DestDir: "{app}"; DestName: "LICENSE.txt"; Flags: ignoreversion
 
 [Icons]
 Name: "{autoprograms}\AI Bridge"; Filename: "{app}\AIBridge.exe"
