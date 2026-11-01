@@ -34,6 +34,7 @@ import images
 import memory
 import discord_bot
 import notify
+import onboarding
 import playbooks
 import providers
 import report
@@ -1347,6 +1348,8 @@ class App:
         self.session = Session(demo, demo_delay)
         self.session.recover()
         self.discord = discord_bot.DiscordService(self)  # started by main() (not by tests)
+        self.desktop = None  # the window + tray (desktop.py), when running as the desktop app
+        self.get_settings, self.save_settings = app_settings, app_settings_save  # for desktop.py (it can't import this module)
         apply_blender_settings()
         self.token = secrets.token_urlsafe(24)
         self.httpd = None
@@ -1428,6 +1431,60 @@ class App:
         else:
             raise ValueError("unknown skills action")
         return {"skills": skills.listing(), "active": skills.active()}
+
+    # ---- first-run setup (the setup wizard) ----
+    def app_info(self):
+        return {"setup_done": onboarding.done(), "desktop": self.desktop is not None, "frozen": onboarding.is_frozen(), "demo": self.demo}
+
+    def setup_get(self, light=False):
+        """light=True skips the slow parts (asking each agent's CLI whether it's signed in, looking for an older install)."""
+        d = self.desktop.info() if self.desktop else {"window": False, "autostart_supported": False, "autostart": False}
+        out = {"done": onboarding.done(), "desktop": d, "close_action": app_settings()["close_action"], "data_folder": str(core.ROOT)}
+        if not light:
+            out.update(agents=onboarding.agent_status(self.demo), old=onboarding.find_old())
+        return out
+
+    def setup_post(self, b):
+        act = b.get("action")
+        if act == "done":
+            onboarding.mark_done(True)
+            return {"ok": True}
+        if act == "reset":  # Settings > Run setup again
+            onboarding.mark_done(False)
+            return {"ok": True}
+        if act == "install":
+            if self.demo:
+                return {"ok": True, "note": "Demo mode: nothing was installed."}
+            return onboarding.install_agent(str(b.get("agent", "")))
+        if act == "signin":
+            if self.demo:
+                return {"ok": True, "note": "Demo mode: you're already signed in."}
+            return onboarding.sign_in(str(b.get("agent", "")))
+        if act == "import":
+            if self.session.alive:
+                raise ValueError("A session is running. Stop it first, then import.")
+            res = onboarding.import_from(str(b.get("path", "")))
+            try:
+                self.reload_data()
+            except Exception as e:
+                raise ValueError(f"Everything was copied, but the chats couldn't be opened ({type(e).__name__}: {e}). "
+                                 f"Restart AI Bridge. Your previous data is saved in {res.get('backup') or 'the old folder'}.")
+            return res
+        raise ValueError("unknown setup action")
+
+    def reload_data(self):
+        """After an import: open the chats again from disk and pick up keys and connector settings that came with it."""
+        chats.init()
+        self.session = Session(self.demo, self.demo_delay)
+        self.session.recover()
+        apply_blender_settings()
+        try:
+            self.discord.stop(wait=False)
+        except Exception:
+            pass
+        self.discord = discord_bot.DiscordService(self)
+        if not self.demo and getattr(self, "_discord_started", False):
+            self.discord.start()
 
     def serve_in_thread(self):
         t = threading.Thread(target=self.httpd.serve_forever, daemon=True)
@@ -1596,10 +1653,17 @@ class App:
                     if u.path == "/":
                         html = (UI_DIR / "index.html").read_text(encoding="utf-8").replace("__TOKEN__", app.token)
                         return self._send(200, html, "text/html; charset=utf-8")
-                    if u.path == "/favicon.ico":
-                        return self._send(204, b"", "image/x-icon")
+                    if u.path in ("/favicon.ico", "/icon.png", "/icon-180.png"):  # the app icon (fixed names only, nothing else from disk)
+                        f = UI_DIR / ("icon.ico" if u.path == "/favicon.ico" else u.path.lstrip("/"))
+                        if not f.exists():
+                            return self._send(204, b"", "image/x-icon")
+                        return self._send(200, f.read_bytes(), "image/x-icon" if f.suffix == ".ico" else "image/png")
                     if u.path == "/api/state":
-                        return self._json(app.session.snapshot())
+                        snap = app.session.snapshot()
+                        snap["app"] = app.app_info()
+                        return self._json(snap)
+                    if u.path == "/api/setup":
+                        return self._json(app.setup_get(light=parse_qs(u.query).get("light") == ["1"]))
                     if u.path.startswith("/api/memory"):
                         return self._memory_get(u)
                     if u.path == "/api/image":
@@ -1812,6 +1876,10 @@ class App:
                         raise ValueError("unknown action")
                     elif path == "/api/discord":
                         return self._json(discord_post(app, b))
+                    elif path == "/api/setup":
+                        return self._json(app.setup_post(b))
+                    elif path == "/api/desktop":
+                        return self._json(app.desktop.handle(b) if app.desktop else {"ok": False, "error": "not running as the desktop app"})
                     elif path == "/api/blender/test":
                         return self._json(blender_test())
                     elif path == "/api/notify/test":
@@ -1842,7 +1910,28 @@ class App:
 
 
 # --------------------------------------------------------------------------- entry point
+def _log_to_file():
+    """The installed app has no console window: send what it prints to <data folder>/logs/app.log (last run kept as app.old.log)."""
+    if sys.stdout is not None and sys.stderr is not None:
+        return
+    logs = core.ROOT / "logs"
+    logs.mkdir(parents=True, exist_ok=True)
+    f = logs / "app.log"
+    if f.exists():
+        try:
+            os.replace(f, logs / "app.old.log")
+        except OSError:
+            pass
+    fh = open(f, "a", encoding="utf-8", buffering=1)
+    if sys.stdout is None:
+        sys.stdout = fh
+    if sys.stderr is None:
+        sys.stderr = fh
+
+
 def main():
+    if "--mcp-server" not in sys.argv:
+        _log_to_file()
     try:
         sys.stdout.reconfigure(encoding="utf-8")
     except Exception:
@@ -1855,7 +1944,9 @@ def main():
     ap = argparse.ArgumentParser(description="AI Bridge app")
     ap.add_argument("--port", type=int, default=8750)
     ap.add_argument("--demo", action="store_true", help="scripted fake AIs: no API keys or credits needed")
-    ap.add_argument("--window", action="store_true", help="open in its own native window (needs: pip install pywebview)")
+    ap.add_argument("--window", action="store_true", help="open in its own window with a tray icon (needs: pip install pywebview pystray)")
+    ap.add_argument("--browser", action="store_true", help="the installed app: open in your browser instead of its own window")
+    ap.add_argument("--background", action="store_true", help="with --window: start hidden in the tray (used by 'start with Windows')")
     ap.add_argument("--no-browser", action="store_true", help="just run the server")
     ap.add_argument("--selfcheck", action="store_true", help="check the AI libraries import (useful for the packaged .exe)")
     a = ap.parse_args()
@@ -1869,25 +1960,40 @@ def main():
             dv = discord.__version__
         except ImportError:
             dv = "MISSING (pip install discord.py)"
-        print("anthropic", anthropic.__version__, "| openai", openai.__version__, "| discord", dv, "| mcp ok | ui:", (UI_DIR / "index.html").exists())
+        try:
+            import webview
+            import pystray  # noqa: F401
+            wv = "ok (" + str(getattr(webview, "__version__", "?")) + ")"
+        except Exception as e:
+            wv = f"MISSING ({type(e).__name__}: {e})"
+        from version import __version__
+        line = (f"AI Bridge {__version__} | anthropic {anthropic.__version__} | openai {openai.__version__} | discord {dv} | mcp ok"
+                f" | window+tray {wv} | ui: {(UI_DIR / 'index.html').exists()} | icon: {(UI_DIR / 'icon.ico').exists()} | data: {core.ROOT}")
+        print(line)
+        try:
+            (core.ROOT / "selfcheck.txt").write_text(line + "\n", encoding="utf-8")  # the windowed .exe has nowhere to print
+        except OSError:
+            pass
         return
 
+    want_window = (a.window or getattr(sys, "frozen", False)) and not a.browser and not a.no_browser
+    if want_window:
+        import desktop
+        if desktop.show_running_copy():  # already open: bring that window to the front instead of starting a second copy
+            return
     app = App(use_chats=True, demo=a.demo, port=a.port)
     app.discord.start()  # only does anything once you've saved a bot token (Settings > Discord)
+    app._discord_started = True
     print(f"AI Bridge is running at {app.url}   (Ctrl+C to quit)")
     print(f"Workspace: {core.WORKSPACE}")
     if a.demo:
         print("DEMO MODE: scripted fake AIs, no API calls.")
-    if a.window:
+    if want_window:
         try:
-            import webview
+            desktop.Desktop(app, background=a.background).run()
+            return
         except ImportError:
             print("pywebview isn't installed (pip install pywebview), opening your browser instead.")
-        else:
-            app.serve_in_thread()
-            webview.create_window("AI Bridge", app.url, width=1320, height=860, min_size=(900, 600))
-            webview.start()
-            return
     if not a.no_browser:
         threading.Timer(0.6, lambda: webbrowser.open(app.url)).start()
     try:

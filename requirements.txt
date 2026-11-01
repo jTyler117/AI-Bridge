@@ -2,5 +2,8 @@ anthropic>=0.40
 openai>=1.50
 mcp>=1.2
 python-dotenv>=1.0
-# optional: pillow  (shrinks very large screenshots automatically)
 discord.py>=2.3     # the Discord bot (notifications + remote control)
+pillow>=10          # shrinks big screenshots; draws the tray icon
+# the desktop app (its own window + tray icon). On Windows the window is WebView2, built into Windows 10/11.
+pywebview>=5.0; sys_platform == "win32"
+pystray>=0.19; sys_platform == "win32"
