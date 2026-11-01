@@ -1,3 +1,6 @@
+# AI Bridge: two AIs, one workspace.
+# Copyright (C) 2026 Tyler Watson
+# SPDX-License-Identifier: GPL-3.0-or-later  (see LICENSE)
 """ai-bridge core: config, shared state, single-writer lock, tools, agent loops.
 
 No `from __future__ import annotations` on purpose: tool JSON schemas are built

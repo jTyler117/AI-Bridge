@@ -1,3 +1,6 @@
+# AI Bridge: two AIs, one workspace.
+# Copyright (C) 2026 Tyler Watson
+# SPDX-License-Identifier: GPL-3.0-or-later  (see LICENSE)
 """Chats and projects.
 
 Every chat is self-contained: its own folder (transcript, board, decisions, images, backups, and the files the AIs write)

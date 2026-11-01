@@ -1,3 +1,6 @@
+# AI Bridge: two AIs, one workspace.
+# Copyright (C) 2026 Tyler Watson
+# SPDX-License-Identifier: GPL-3.0-or-later  (see LICENSE)
 """Skills: reusable instruction packs (a SKILL.md plus optional reference files and scripts), the same format Claude Code
 and Codex use. Turn one on for an AI with /skill <name> [claude|gpt], and it's added to that AI's instructions.
 

@@ -1,3 +1,6 @@
+# AI Bridge: two AIs, one workspace.
+# Copyright (C) 2026 Tyler Watson
+# SPDX-License-Identifier: GPL-3.0-or-later  (see LICENSE)
 """First-run setup: what the setup wizard needs from the app.
 
 - status(): is setup done, which AI agents are installed / signed in, is there an older AI Bridge to bring over.

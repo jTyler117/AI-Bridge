@@ -1,3 +1,6 @@
+# AI Bridge: two AIs, one workspace.
+# Copyright (C) 2026 Tyler Watson
+# SPDX-License-Identifier: GPL-3.0-or-later  (see LICENSE)
 """Writes packaging/version_info.txt (the version Windows shows in the .exe's Properties) from aibridge/version.py."""
 import re
 import sys
@@ -13,7 +16,8 @@ t = tuple(nums[:4])
   ffi=FixedFileInfo(filevers={t}, prodvers={t}, mask=0x3f, flags=0x0, OS=0x40004, fileType=0x1, subtype=0x0, date=(0, 0)),
   kids=[
     StringFileInfo([StringTable('040904B0', [
-      StringStruct('CompanyName', 'AI Bridge'),
+      StringStruct('CompanyName', 'Tyler Watson'),
+      StringStruct('LegalCopyright', 'Copyright (C) 2026 Tyler Watson. GPL-3.0-or-later.'),
       StringStruct('FileDescription', 'AI Bridge'),
       StringStruct('FileVersion', '{__version__}'),
       StringStruct('InternalName', 'AIBridge'),

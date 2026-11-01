@@ -1,3 +1,6 @@
+# AI Bridge: two AIs, one workspace.
+# Copyright (C) 2026 Tyler Watson
+# SPDX-License-Identifier: GPL-3.0-or-later  (see LICENSE)
 """Report cards: what a session got done, built from what the app recorded (never by asking an AI, so it costs nothing).
 
 At the start of a session the app saves a few "marks" (where the transcript, file changes and usage stood). When the

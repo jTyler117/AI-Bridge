@@ -1,3 +1,6 @@
+# AI Bridge: two AIs, one workspace.
+# Copyright (C) 2026 Tyler Watson
+# SPDX-License-Identifier: GPL-3.0-or-later  (see LICENSE)
 """Discord: AI Bridge's notifications and remote control, as one bot that only takes orders from you.
 
 What it does once it's linked to a channel:
