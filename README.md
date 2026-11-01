@@ -286,7 +286,11 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) before sending changes.
 
 ## License
 
-Not chosen yet. Until a license file is added, all rights are reserved.
+AI Bridge is free software under the **GNU General Public License v3.0** (see [LICENSE](LICENSE)): you can use, change and
+share it, and if you share a changed version, it has to stay under GPL-3.0 with its source code available.
+
+AI Bridge works with Claude, ChatGPT and the other AIs and apps it connects to, but it isn't made by or affiliated with
+Anthropic, OpenAI or any of them.
 
 ## Not verified yet
 

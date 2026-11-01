@@ -30,6 +30,10 @@ python aibridge/app.py --demo   # stand-in AIs: no keys, no cost
 - **Add-ons stay add-ons.** Blender, Roblox, Unity and friends are optional connectors. The core app shouldn't assume any of them.
 - **Every theme.** UI changes should look right in Dark, Light, OLED, High contrast and Liquid Glass.
 
+## License
+
+By sending a change you agree it's released under the project's license, GPL-3.0 (see LICENSE).
+
 ## Commits
 
 Small, focused changes with a clear message are easiest to review. Say what you tested.
