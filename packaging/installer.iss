@@ -5,7 +5,7 @@
 ; - Uninstalling keeps your data unless you tick the box to delete it.
 
 #ifndef AppVersion
-  #define AppVersion "0.9.0"
+  #define AppVersion "0.9.1"
 #endif
 
 [Setup]
