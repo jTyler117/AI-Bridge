@@ -20,7 +20,9 @@ pyinstaller --noconfirm --clean --distpath dist --workpath build packaging\aibri
 if errorlevel 1 ( echo PyInstaller failed. & exit /b 1 )
 
 echo.
-echo [2/3] Checking the built app can load everything...
+echo [2/3] Writing THIRD-PARTY-NOTICES.txt and checking the built app can load everything...
+python packaging\make_notices.py "dist\AI Bridge\THIRD-PARTY-NOTICES.txt"
+if errorlevel 1 ( echo Couldn't write the third-party notices. & exit /b 1 )
 set "BRIDGE_HOME=%CD%\build\selfcheck"
 if exist "%BRIDGE_HOME%\selfcheck.txt" del "%BRIDGE_HOME%\selfcheck.txt"
 start /wait "" "dist\AI Bridge\AIBridge.exe" --selfcheck
