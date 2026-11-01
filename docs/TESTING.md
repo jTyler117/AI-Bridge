@@ -1,11 +1,13 @@
-# First real run: test checklist
+# Real-PC test checklist
 
-Everything below passed against fakes in the sandbox (`python tests/selftest.py` and `node tests/ui_smoke.js`). These are the things
-only your PC can prove. Tick them off, and send back anything that looks off (a screenshot of the error is perfect).
+Everything below passes against fakes (`python tests/selftest.py` and `node tests/ui_smoke.js`). These are the things only a
+real PC can prove. Tick them off, and report anything that looks off (a screenshot of the error is perfect).
 
-## 0. Start it
-- [ ] Double-click `run_app.bat`. The first start after this update says "Installing what this update needs..." (it adds discord.py). Then the app opens in your browser.
-- [ ] Your old conversation shows up as a chat in the left sidebar (it's moved over automatically on the first start), with its messages, board and files.
+## 0. Install and set up
+- [ ] Run `AI-Bridge-Setup-<version>.exe`. It installs without an admin prompt and opens AI Bridge in its own window.
+- [ ] The setup wizard: pick a look, connect both AIs (Install / Sign in / Test connection), and, if you had an older AI Bridge
+      folder, "Bring your stuff over" copies its chats, memory, playbooks, skills, add-on settings and keys.
+- [ ] Close the window: the "keep running in the tray or quit?" question appears and both choices work. The tray icon opens it again.
 
 ## 1. The basics, on your plans
 - [ ] New session: Seat 1 = Claude · my plan, Seat 2 = ChatGPT · my plan. The Model dropdowns list models. Start.

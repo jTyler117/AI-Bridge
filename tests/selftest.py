@@ -17,6 +17,12 @@ import time
 from pathlib import Path
 from types import SimpleNamespace as NS
 
+try:  # Windows consoles (and GitHub's Windows runners) default to cp1252, which can't print the emoji some checks mention
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+except Exception:
+    pass
+
 # point everything at a throwaway workspace + a free port BEFORE importing core
 _tmp = tempfile.mkdtemp(prefix="aibridge_test_")
 os.environ["BRIDGE_WORKSPACE"] = _tmp
