@@ -9,7 +9,22 @@ Apps like Blender, Unity, Godot, Roblox Studio, Figma, GitHub, Obsidian or a web
 > It connects the two **APIs**, not your open chatgpt.com / claude.ai tabs (those can't be plugged into outside
 > code). The shared transcript + state files give the two models continuity.
 
-## Quick start (Windows)
+## Install (Windows)
+
+Download **AI-Bridge-Setup-<version>.exe** and run it. It installs just for you (no admin prompt), can install Claude Code,
+Codex and Ollama for you from their makers' official installers, and opens AI Bridge in its own window. A short setup wizard
+then connects your AIs (install, sign in, test), picks a look, can bring over an older AI Bridge folder (it copies, never moves),
+and offers Discord and add-ons. Everything you can do is explained in **How to use** (the ? button, or Settings > How to use).
+
+Your chats, keys and settings live in `%LOCALAPPDATA%\AI Bridge`, separate from the program, so updates never touch them.
+Closing the window can keep it running in the tray (sessions and Discord carry on), and it can start with Windows.
+
+The installer isn't code-signed yet, so Windows SmartScreen may warn the first time: More info > Run anyway.
+
+Build the installer yourself: `packaging\build_windows.bat` (needs Python 3.12 and the free Inno Setup 6). Pushing a `v*` tag
+builds it on GitHub Actions too.
+
+## Run from source (Windows)
 
 1. Install Python 3.10+ from python.org (tick "Add python.exe to PATH").
 2. Double-click **`run_app.bat`**. First run builds a private environment and installs packages, then opens the app in your browser.
@@ -19,8 +34,7 @@ Apps like Blender, Unity, Godot, Roblox Studio, Figma, GitHub, Obsidian or a web
 Want to poke around for free first? `run_app.bat --demo` runs scripted stand-in AIs: no keys, no subscriptions, no cost, and it
 includes a fake approval request so you can see the flow.
 
-From a terminal instead: `python aibridge/app.py` (add `--demo` for the stand-in AIs). A standalone Windows app with an
-installer is in progress (`packaging/`); until then `run_app.bat` is the supported way to run it.
+From a terminal instead: `python aibridge/app.py` (add `--demo` for the stand-in AIs, `--window` for its own window + tray).
 
 ## What's in it (quick tour)
 
@@ -251,7 +265,7 @@ connectors, the Discord bot token) are saved here too, and are never shown to th
 aibridge/      the app (Python): app.py is the entry point and web server, core.py the tools, safety gate and AI loops
 ui/            the page (a single index.html, no build step)
 tests/         selftest.py (no keys needed), fake_cli.py, ui_smoke.js (optional, needs Node + Playwright)
-packaging/     Windows build scripts
+packaging/     Windows build: PyInstaller spec, Inno Setup installer, build_windows.bat
 docs/          TESTING.md (the real-PC checklist)
 run_app.bat    double-click to run on Windows
 ```
@@ -259,7 +273,7 @@ run_app.bat    double-click to run on Windows
 Inside `aibridge/`: `cli_agents.py` (your plans, via the Claude Code / Codex CLIs) · `providers.py` (Ollama, LM Studio, Gemini,
 OpenRouter, custom) · `bridge_server.py` (the MCP tool server) · `approve.py` (answer approvals from a terminal in MCP mode) ·
 `connectors.py` (add-on apps over MCP) · `discord_bot.py` + `notify.py` · `chats.py` · `memory.py` · `skills.py` · `commands.py` ·
-`playbooks.py` · `report.py` · `images.py` · `appearance.py`.
+`playbooks.py` · `report.py` · `images.py` · `appearance.py` · `desktop.py` (window + tray) · `onboarding.py` (setup wizard).
 
 ## Tests
 
@@ -280,4 +294,4 @@ Tested end to end against fake models, a fake Blender, a fake OpenAI-compatible 
 the demo mode (`python tests/selftest.py`), including budget pauses, emergency stop, crash recovery, kill-mid-write, permission-bypass
 attempts and forged Discord buttons; and for real on Windows with Claude Code + Codex on their plans and the Roblox Studio connector.
 **Not** tested yet with: live Anthropic/OpenAI API keys, a real Ollama / LM Studio, a real Discord bot, a real Blender session, or a
-packaged Windows build.
+packaged Windows build on other PCs.
