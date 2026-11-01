@@ -6,10 +6,10 @@
 Codex, Claude with Claude, or Codex with DeepSeek or a local model. They plan on a shared board, write and review each other's
 work, and can use other programs through MCP, while you stay in charge with approvals.
 
-https://github.com/user-attachments/assets/cccd919c-46ff-4a34-a473-f1fb268073d6
-
 It's a Windows desktop app. Claude and ChatGPT run through **your own plans** (via the official Claude Code and Codex apps,
 signed in with your account), so there's no per-message cost. API keys and free local models work too.
+
+https://github.com/user-attachments/assets/cccd919c-46ff-4a34-a473-f1fb268073d6
 
 ## Install
 
