@@ -23,8 +23,20 @@ from dataclasses import dataclass
 from pathlib import Path
 
 # when frozen into an .exe (PyInstaller) keep .env + workspace next to the .exe, not in its temp unpack folder
-# from source, the code lives in <repo>/aibridge/ and .env + workspace sit in <repo>/
-_HERE = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parent.parent
+# Where .env (your keys) and workspace\ (your chats) live:
+# - BRIDGE_HOME, if set
+# - the installed app: your own data folder, %LOCALAPPDATA%\AI Bridge (the program folder gets replaced on every update)
+# - from source: the repo folder (the code itself is in <repo>/aibridge/)
+def _home():
+    if os.getenv("BRIDGE_HOME"):
+        return Path(os.environ["BRIDGE_HOME"]).expanduser().resolve()
+    if getattr(sys, "frozen", False):
+        return Path(os.getenv("LOCALAPPDATA") or (Path.home() / "AppData" / "Local")) / "AI Bridge"
+    return Path(__file__).resolve().parent.parent
+
+
+_HERE = _home()
+_HERE.mkdir(parents=True, exist_ok=True)
 try:
     from dotenv import load_dotenv
 
@@ -1579,7 +1591,7 @@ def run_tool(tools, name, args):
 
 
 _PROTECTED_NAMES = {"state.json", "approvals.json", "transcript.json", "transcript.md", "halt.flag", "session.json", "context.md",
-                    "connectors.json", "chats.json", "notify.json", "skills.json", "themes.json", "devices.json", "discord.json", "ui.json", "app_settings.json", "commands.json", "ai_profiles.json", "playbooks.json"}
+                    "connectors.json", "chats.json", "notify.json", "skills.json", "themes.json", "devices.json", "discord.json", "ui.json", "app_settings.json", "commands.json", "ai_profiles.json", "playbooks.json", "setup.json", "instance.json"}
 
 
 # ---- crash-safe file writes + undo --------------------------------------------------------------

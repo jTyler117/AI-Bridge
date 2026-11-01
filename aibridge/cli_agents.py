@@ -29,9 +29,39 @@ SERVER_NAME = "aibridge"
 TURN_TIMEOUT = float(os.getenv("BRIDGE_CLI_TIMEOUT", "900"))  # seconds one CLI turn may take (includes waiting on your approvals)
 
 INSTALL_HINT = {
-    "claude": "Install Claude Code (https://claude.com/product/claude-code), then run:  claude auth login",
-    "chatgpt": "Install the Codex CLI (npm i -g @openai/codex), then run:  codex login   (choose Sign in with ChatGPT)",
+    "claude": "Claude Code isn't installed. Install it from Settings or the setup wizard (or: irm https://claude.ai/install.ps1 | iex), then sign in.",
+    "chatgpt": "Codex isn't installed. Install it from Settings or the setup wizard (or: irm https://chatgpt.com/codex/install.ps1 | iex), then sign in.",
 }
+SIGNIN_HINT = {
+    "claude": "Not signed in yet. Press Sign in (or run:  claude auth login).",
+    "chatgpt": "Not signed in yet. Press Sign in (or run:  codex login  and choose Sign in with ChatGPT).",
+}
+
+
+def _fresh_path():
+    """PATH as Windows has it now. An agent installed after AI Bridge started adds itself to the user's PATH in the registry,
+    which this process never sees in its own environment."""
+    parts = os.environ.get("PATH", "").split(os.pathsep)
+    if os.name == "nt":
+        try:
+            import winreg
+            for root, key in ((winreg.HKEY_CURRENT_USER, "Environment"),
+                              (winreg.HKEY_LOCAL_MACHINE, r"SYSTEM\CurrentControlSet\Control\Session Manager\Environment")):
+                try:
+                    with winreg.OpenKey(root, key) as k:
+                        parts += os.path.expandvars(winreg.QueryValueEx(k, "Path")[0]).split(os.pathsep)
+                except OSError:
+                    pass
+        except ImportError:
+            pass
+        home = Path.home()
+        parts += [str(home / ".local" / "bin"), str(Path(os.getenv("APPDATA", home)) / "npm")]  # the official installers / npm
+    seen, out = set(), []
+    for p in parts:
+        if p and p.lower() not in seen:
+            seen.add(p.lower())
+            out.append(p)
+    return os.pathsep.join(out)
 
 
 def cli_command(agent):
@@ -45,7 +75,7 @@ def cli_command(agent):
             return [str(x) for x in lst] if lst else None
         except ValueError:
             return None
-    found = shutil.which(val)
+    found = shutil.which(val) or shutil.which(val, path=_fresh_path())
     return [found] if found else None
 
 
@@ -78,11 +108,11 @@ def login_status(agent):
     if agent == "claude":
         try:
             d = json.loads(r.stdout)
-            return True, bool(d.get("loggedIn")), "signed in" if d.get("loggedIn") else INSTALL_HINT[agent]
+            return True, bool(d.get("loggedIn")), "signed in" if d.get("loggedIn") else SIGNIN_HINT[agent]
         except ValueError:
             pass
     ok = r.returncode == 0 and "not logged in" not in out.lower()
-    return True, ok, (out.splitlines()[-1] if out else "") if ok else INSTALL_HINT[agent]
+    return True, ok, (out.splitlines()[-1] if out else "") if ok else SIGNIN_HINT[agent]
 
 
 def server_command(side, blender):
@@ -148,7 +178,7 @@ class CLIAgent:
                 raise core.Interrupted("ended by Send now")
             if proc.returncode != 0:
                 tail = (err or out or "").strip()[-600:]
-                hint = ("  " + INSTALL_HINT[self.kind]) if any(w in tail.lower() for w in ("login", "auth", "sign in", "credential", "401")) else ""
+                hint = ("  " + SIGNIN_HINT[self.kind]) if any(w in tail.lower() for w in ("login", "auth", "sign in", "credential", "401")) else ""
                 raise RuntimeError(f"{core.PRETTY[self.name]}'s CLI exited with code {proc.returncode}: {tail}{hint}")
             return self.parse(out, out_file)
 
@@ -287,7 +317,7 @@ class CodexCLIAgent(CLIAgent):
             raise RuntimeError(
                 "Codex refused to run its tools: it treats MCP tool calls as needing approval, and `codex exec` has nobody "
                 "to ask. AI Bridge already tells it to auto-approve its own guarded tool server, so your Codex is probably "
-                "too old to honor that setting. Update it (npm i -g @openai/codex), then press Test connection again.")
+                "too old to honor that setting. Update it (Settings > AI models > Install/update, or run the Codex installer again), then press Test connection again.")
         return text or (stdout or "").strip()
 
 

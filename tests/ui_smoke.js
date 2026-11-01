@@ -115,7 +115,18 @@ function check(name, cond, extra) {
     check("settings search finds Discord", await p.evaluate(() => !document.querySelector("#sec-notify").hidden));
     await p.evaluate(() => closeSettings());
 
-    // 9. themes don't break the page
+    // 9. the setup wizard (opens by itself on a real first run; demo mode opens it on request)
+    check("Settings has 'Run setup again'", !!(await p.$("#spn-setup")) || await p.evaluate(() => { openSettings("appearance"); const ok = !!document.querySelector("#spn-setup"); closeSettings(); return ok; }));
+    await p.evaluate(() => openWizard(0));
+    await until(() => document.querySelector("#wz-welcome"), 6000);
+    await p.click("#wz-next"); await until(() => document.querySelector("#wz-look"), 4000);
+    await p.click("#wz-next"); await until(() => document.querySelector("#wz-ais .chip"), 8000);
+    check("the wizard walks Welcome > Look > Connect your AIs, and sees both AIs ready in demo mode",
+      await p.evaluate(() => document.querySelectorAll("#wz-ais .wz-agents .chip.st-good").length === 2));
+    await p.evaluate(() => closeWizard());
+    check("the wizard closes", !(await p.$("#wizard")));
+
+    // 10. themes don't break the page
     for (const t of [{ theme: "light", glass: false }, { theme: "dark", glass: true, glass_amount: 60, glass_grad: ["", "", ""] }, { theme: "dark", glass: false }]) {
       await p.evaluate(async x => saveAppearance(x), t); await p.waitForTimeout(300);
     }

@@ -538,7 +538,7 @@ def selftest_cli():
     os.environ["CODEX_BIN"] = "definitely-not-installed-xyz"
     check("detect: a missing CLI is reported with install steps",
           cli_agents.login_status("claude")[0] is False and cli_agents.login_status("chatgpt")[0] is False
-          and "npm i -g @openai/codex" in cli_agents.login_status("chatgpt")[2])
+          and "chatgpt.com/codex/install.ps1" in cli_agents.login_status("chatgpt")[2])
     os.environ["CLAUDE_BIN"] = json.dumps([sys.executable, fake, "claude"])
     os.environ["CODEX_BIN"] = json.dumps([sys.executable, fake, "codex"])
     os.environ["FAKE_CLI_LOGGED_IN"] = "1"
@@ -572,7 +572,7 @@ def selftest_cli():
     os.environ["FAKE_CLI_SCENARIO"] = "blocked"
     res = sess.backend_test("chatgpt")
     check("app+cli: a Codex that cancels its own tool calls gets a clear 'update Codex' message, not a silent stall",
-          res["ok"] is False and "refused to run its tools" in res.get("error", "") and "npm i -g @openai/codex" in res["error"], str(res))
+          res["ok"] is False and "refused to run its tools" in res.get("error", "") and "Update it" in res["error"], str(res))
     os.environ["FAKE_CLI_SCENARIO"] = "chat"
     os.environ["FAKE_CLI_LOGGED_IN"] = "0"
     try:
@@ -3015,6 +3015,172 @@ def selftest_playbooks():
         core.set_mode("approval")
 
 
+def selftest_setup():
+    """First-run setup (the setup wizard) and the desktop shell (window + tray), without a real window."""
+    import app
+    import chats
+    import cli_agents
+    import desktop
+    import onboarding
+    import shutil
+    print("\n-- setup wizard + desktop shell --")
+    old_root, old_env_import = core.ROOT, os.environ.get("BRIDGE_IMPORT_FROM")
+    tmp_root = Path(tempfile.mkdtemp(prefix="aib_home_"))
+    old_inst = Path(tempfile.mkdtemp(prefix="aib_old_"))
+    settings_path = core.DATA / "app_settings.json"
+    settings_before = settings_path.read_text() if settings_path.exists() else None
+    try:
+        core.ROOT = tmp_root  # never touch the real .env / data folder
+        # ---- an older install to bring over (made with the real code, like a real one)
+        (old_inst / "workspace").mkdir()
+        (old_inst / "workspace" / "chats.json").write_text(json.dumps({"chats": {"c_0a0b0c0d": {"id": "c_0a0b0c0d", "name": "Old chat", "project": "",
+            "memory": "chat-0a0b0c0d", "created": "2026-10-01 10:00:00", "updated": "2026-10-01 10:00:00"}}, "projects": {}, "active": "c_0a0b0c0d"}))
+        (old_inst / "workspace" / "chats" / "c_0a0b0c0d").mkdir(parents=True)
+        (old_inst / "workspace" / "chats" / "c_0a0b0c0d" / "transcript.json").write_text(json.dumps([{"speaker": "human", "text": "old hello"}]))
+        (old_inst / "workspace" / "playbooks.json").write_text(json.dumps({"items": [{"id": "pb_7", "name": "Mine", "setup": {"task": "x"}}], "seeded": True}))
+        (old_inst / "workspace" / "halt.flag").write_text("old stop")
+        (old_inst / ".env").write_text("OLD_ONLY_KEY=from-old\nSHARED_KEY=old-value\n")
+        src_before = sorted(str(p.relative_to(old_inst)) + ":" + str(p.stat().st_size) for p in old_inst.rglob("*") if p.is_file())
+        (tmp_root / ".env").write_text("SHARED_KEY=new-value\n")
+
+        d = onboarding.describe(old_inst)
+        check("setup: an older AI Bridge folder is recognised, counts only (no contents, no key values)",
+              d and d["chats"] == 1 and d["playbooks"] == 1 and d["keys"] == ["OLD_ONLY_KEY", "SHARED_KEY"] and "from-old" not in json.dumps(d), d)
+        check("setup: a random folder isn't mistaken for one", onboarding.describe(tmp_root) is None)
+        os.environ["BRIDGE_IMPORT_FROM"] = str(old_inst)
+        check("setup: it's found automatically", (onboarding.find_old() or {}).get("path") == str(old_inst))
+        os.environ["SHARED_KEY"] = "new-value"
+        res = onboarding.import_from(old_inst)
+        src_after = sorted(str(p.relative_to(old_inst)) + ":" + str(p.stat().st_size) for p in old_inst.rglob("*") if p.is_file())
+        check("setup: importing COPIES: the old folder is exactly as it was", src_before == src_after)
+        check("setup: the chats and playbooks arrive", (core.DATA / "chats" / "c_0a0b0c0d" / "transcript.json").exists()
+              and "Mine" in (core.DATA / "playbooks.json").read_text())
+        envt = (tmp_root / ".env").read_text()
+        check("setup: keys this app doesn't have come over; a key already here is NOT overwritten",
+              "OLD_ONLY_KEY=from-old" in envt and "SHARED_KEY=new-value" in envt and "old-value" not in envt and res["keys_added"] == ["OLD_ONLY_KEY"], envt)
+        check("setup: an old emergency stop doesn't come along", not (core.DATA / "halt.flag").exists())
+        check("setup: what was here before is backed up first", res["backup"] and Path(res["backup"]).exists())
+        check("setup: the result names keys, never their values", "from-old" not in json.dumps(res))
+        try:
+            onboarding.import_from(tmp_root)
+            ok_ = False
+        except ValueError:
+            ok_ = True
+        check("setup: importing a folder that isn't AI Bridge is refused", ok_)
+        os.environ.pop("OLD_ONLY_KEY", None)
+        os.environ.pop("SHARED_KEY", None)
+
+        # ---- done flag, protected files
+        onboarding.mark_done(False)
+        check("setup: not done until you finish it", onboarding.done() is False)
+        onboarding.mark_done(True)
+        check("setup: finishing it is remembered", onboarding.done() is True)
+        check("setup: the AIs can't mark setup done or undone (app-owned file)", "setup.json" in core._PROTECTED_NAMES and "instance.json" in core._PROTECTED_NAMES)
+
+        # ---- agents: official installers only, keys never reach the sign-in window
+        check("setup: agents install from the vendors' official installers",
+              "claude.ai/install.ps1" in onboarding.INSTALLERS["claude"]["ps"] and "chatgpt.com/codex/install.ps1" in onboarding.INSTALLERS["chatgpt"]["ps"]
+              and "ollama.com/download/OllamaSetup.exe" in onboarding.INSTALLERS["ollama"]["ps"])
+        check("setup: each agent says which paid plan it needs", "paid Claude plan" in onboarding.INSTALLERS["claude"]["needs"] and "paid ChatGPT plan" in onboarding.INSTALLERS["chatgpt"]["needs"])
+        os.environ["ANTHROPIC_API_KEY"] = "sk-ant-SECRET-SETUP"
+        env_ = cli_agents.clean_env({"PATH": cli_agents._fresh_path()})
+        check("setup: the install / sign-in window never gets your API keys (a key would switch the CLI to paid billing)", "ANTHROPIC_API_KEY" not in env_)
+        os.environ.pop("ANTHROPIC_API_KEY", None)
+        check("setup: an agent installed after the app started is still found (fresh PATH)", os.environ.get("PATH", "").split(os.pathsep)[0] in cli_agents._fresh_path())
+        if os.name != "nt":
+            try:
+                onboarding.install_agent("claude")
+                ok_ = False
+            except ValueError as e:
+                ok_ = "only available on Windows" in str(e)
+            check("setup: off Windows, install explains instead of failing oddly", ok_)
+        try:
+            onboarding.install_agent("rm -rf /")
+            ok_ = False
+        except ValueError:
+            ok_ = True
+        check("setup: only the known installers can be run", ok_)
+
+        # ---- the app's endpoints (demo: no real CLIs)
+        a = app.App(demo=True, port=0, use_chats=False)
+        try:
+            g = a.setup_get()
+            check("setup: GET /api/setup reports the agents, the older install and the window options",
+                  g["agents"]["claude"]["signed_in"] and "old" in g and g["desktop"]["window"] is False)
+            check("setup: the light version skips the slow checks", "agents" not in a.setup_get(light=True))
+            a.setup_post({"action": "reset"})
+            check("setup: 'Run setup again' clears the done flag", not a.app_info()["setup_done"])
+            a.setup_post({"action": "done"})
+            check("setup: the state the page polls says whether setup is done", a.app_info()["setup_done"] is True)
+            check("setup: in demo mode Install / Sign in don't run anything", "Demo mode" in a.setup_post({"action": "install", "agent": "claude"})["note"])
+
+            # ---- the desktop shell, with a stand-in window
+            class FakeWin:
+                def __init__(self):
+                    self.calls = []
+
+                def show(self): self.calls.append("show")
+                def restore(self): self.calls.append("restore")
+                def hide(self): self.calls.append("hide")
+                def destroy(self): self.calls.append("destroy")
+                def evaluate_js(self, js): self.calls.append("js:" + js)
+
+            dk = desktop.Desktop(a)
+            dk.window = FakeWin()
+            app.app_settings_save({"close_action": "ask"})
+            check("desktop: closing the window doesn't close it; it asks you, in the app's own dialog", dk._on_closing() is False and any("askClose" in c for c in dk.window.calls))
+            app.app_settings_save({"close_action": "tray"})
+            dk._on_closing()
+            time.sleep(0.3)
+            check("desktop: 'keep running in the tray' hides the window (sessions keep going)", "hide" in dk.window.calls and dk.hidden and not dk.quitting)
+            dk.handle({"action": "show"})
+            check("desktop: the tray / a second launch brings it back", dk.window.calls[-2:] == ["show", "restore"] and not dk.hidden)
+            dk.handle({"action": "close", "choice": "tray", "remember": True})
+            check("desktop: 'remember my choice' saves it", app.app_settings()["close_action"] == "tray")
+            try:
+                dk.handle({"action": "close", "choice": "explode"})
+                ok_ = False
+            except ValueError:
+                ok_ = True
+            check("desktop: only tray or quit are accepted", ok_)
+            check("desktop: start-with-Windows is only offered in the installed app", dk.info()["autostart_supported"] is (sys.platform == "win32" and bool(getattr(sys, "frozen", False))))
+
+            # one copy at a time: a second launch finds the running one through instance.json and asks it to show its window
+            a.serve_in_thread()
+            desktop._write_instance(a)
+            shown = []
+            dk.show = lambda: shown.append(1)
+            check("desktop: a second launch finds the running copy and brings its window forward", desktop.show_running_copy() is True and shown)
+            inst = core._read_json(desktop._instance_path(), {})
+            core._write_json(desktop._instance_path(), dict(inst, token="wrong"))
+            check("desktop: a stale or forged instance file is ignored (the token must match)", desktop.show_running_copy() is False)
+            desktop._write_instance(a)
+            app.app_settings_save({"close_action": "quit"})
+            dk2 = desktop.Desktop(a)
+            dk2.window = FakeWin()
+            dk2._on_closing()
+            time.sleep(0.5)
+            check("desktop: 'quit' stops everything and removes the instance file", dk2.quitting and "destroy" in dk2.window.calls and not desktop._instance_path().exists())
+        finally:
+            try:
+                a.httpd.server_close()
+            except Exception:
+                pass
+    finally:
+        core.ROOT = old_root
+        if old_env_import is None:
+            os.environ.pop("BRIDGE_IMPORT_FROM", None)
+        else:
+            os.environ["BRIDGE_IMPORT_FROM"] = old_env_import
+        if settings_before is None:
+            settings_path.unlink(missing_ok=True)
+        else:
+            settings_path.write_text(settings_before)
+        (core.DATA / "setup.json").unlink(missing_ok=True)
+        shutil.rmtree(old_inst, ignore_errors=True)
+        shutil.rmtree(tmp_root, ignore_errors=True)
+
+
 def selftest_addons():
     """Add-ons: Blender lives in Settings > Connectors now, next to the app presets (Unity, Godot, GitHub, browser, Figma, ...)."""
     import app
@@ -4550,6 +4716,7 @@ def main():
     selftest_playbooks()
     selftest_addons()
     selftest_app()
+    selftest_setup()  # last: it imports an old install over the test data
 
     if skipped:
         print(f"\n{passed} checks passed, but NOT EVERYTHING WAS TESTED. Skipped: " + "; ".join(skipped))

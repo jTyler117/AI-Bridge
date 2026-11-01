@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AI Bridge</title>
+<link rel="icon" href="/favicon.ico">
 <style>
 :root{--bg:#0e1015;--panel:#161922;--panel2:#1d2131;--line:#262b3a;--text:#e7e9f0;--muted:#8a92a8;
   --claude:#e08a62;--gpt:#3fb68b;--human:#6c8cff;--accent:#5b72e0;--warn:#f3b34c;--bad:#ef5b5b;--good:#46c28a;--r:12px;
@@ -97,6 +98,7 @@ pre.diff .add{color:var(--good);background:color-mix(in srgb,var(--good) 12%,tra
 #sp-nav{border-right:1px solid var(--line);background:var(--panel);padding:10px;display:flex;flex-direction:column;gap:2px;overflow:auto}
 .spn{display:flex;gap:10px;align-items:center;text-align:left;background:none;border:0;color:var(--muted);padding:9px 10px;border-radius:calc(var(--r) - 2px);font:inherit;cursor:pointer}
 .spn:hover{background:var(--panel2);color:var(--text)}.spn.on{background:color-mix(in srgb,var(--accent) 22%,transparent);color:var(--text);font-weight:600}.spn.dim{opacity:.35}.spn .ico{width:20px;text-align:center}
+.spn-sep{height:1px;background:var(--line);margin:8px 6px}
 #sp-content{overflow:auto;padding:22px 28px 60px}.sp-sec{max-width:820px}.sp-sec>h2{margin:0 0 4px;font-size:20px}.sp-intro{margin:0 0 14px}
 .sp-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;margin-bottom:14px}.sp-card>h3:first-child{margin-top:0}
 #csback{position:fixed;inset:0;z-index:34;background:color-mix(in srgb,#000 40%,transparent)}#csback[hidden]{display:none}
@@ -367,6 +369,26 @@ body.glass.glass-light .rc { border-color: color-mix(in srgb, #fff 65%, var(--li
 .b > .ic, .appr-h > .ic, .dg-h .ic, .rc-h .ic{margin-right:6px}
 :root{scrollbar-color:color-mix(in srgb,var(--text) 24%,transparent) transparent}
 *{scrollbar-width:thin}
+/* setup wizard */
+#wizard{position:fixed;inset:0;z-index:45;display:flex;align-items:center;justify-content:center;padding:16px;background:color-mix(in srgb,var(--bg) 78%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.wz{width:min(760px,100%);max-height:94vh;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px 28px 22px;box-shadow:0 24px 70px color-mix(in srgb,#000 40%,transparent)}
+body.glass .wz{background:color-mix(in srgb,var(--panel) 90%,transparent)!important;backdrop-filter:blur(28px) saturate(170%);-webkit-backdrop-filter:blur(28px) saturate(170%)}
+.wz-dots{display:flex;gap:6px;margin-bottom:18px}.wz-dot{height:4px;flex:1;border-radius:4px;background:var(--line);transition:background .2s}.wz-dot.on{background:var(--accent)}
+.wz h1{font-size:25px;margin:6px 0 6px;letter-spacing:-.01em}.wz-sub{color:var(--muted);margin:0 0 16px;max-width:600px;line-height:1.5}
+.wz-logo{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-size:26px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--claude),var(--gpt));margin-top:4px}img.wz-logo{background:none;display:block}
+.wz-feats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:6px 0 16px}
+.wz-feat{display:grid;gap:4px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--panel2)}.wz-feat .ic{width:20px;height:20px;color:var(--accent)}.wz-feat span{color:var(--muted);font-size:13px;line-height:1.4}
+.wz-agents{display:grid;gap:10px}
+.wz-agent{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--panel2)}
+.wz-av{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:700;color:#fff}.wz-av.c{background:var(--claude)}.wz-av.g{background:var(--gpt)}.wz-av.o{background:var(--muted)}
+.wz-more summary{cursor:pointer;list-style:none}.wz-more summary::-webkit-details-marker{display:none}.wz-more summary::before{content:"▸ ";color:var(--muted)}.wz-more[open] summary::before{content:"▾ "}
+.wz-addons{display:grid;gap:8px}.wz-addon{display:flex;gap:12px;align-items:center;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:var(--panel2);cursor:pointer}
+.wz-grad{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.wz-radios{display:grid;gap:6px;margin-top:8px}
+.wz-okbox{display:flex;gap:12px;align-items:center}.wz-okbox .ic{width:22px;height:22px;color:var(--good)}
+.wz-foot{display:flex;justify-content:space-between;align-items:center;margin-top:22px;gap:10px}
+@media (max-width:640px){.wz-feats{grid-template-columns:1fr}.wz{padding:18px}}
+.guide{display:grid;gap:8px}.guide-t summary{display:flex;gap:10px;align-items:center;cursor:pointer;list-style:none}.guide-t summary::-webkit-details-marker{display:none}.guide-t summary .ic{width:18px;height:18px;color:var(--accent)}.guide-t summary::after{content:"▸";margin-left:auto;color:var(--muted)}.guide-t[open] summary::after{content:"▾"}.guide-b{padding:6px 2px 2px 28px;line-height:1.55}.guide-b p{margin:6px 0}.guide-b ul{margin:6px 0;padding-left:18px}.guide-b li{margin:3px 0}#guide-q{flex:1;max-width:360px}
 </style>
 </head>
 <body>
@@ -470,6 +492,7 @@ const ICONS = {
   shield: '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>',
   square: '<rect x="5" y="5" width="14" height="14" rx="2"/>',
   refresh: '<path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/>',
+  help: '<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>',
   list: '<path d="M3 5h.01M3 12h.01M3 19h.01M8 5h13M8 12h13M8 19h13"/>',
   activity: '<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>',
   file: '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/>',
@@ -666,11 +689,23 @@ function renderAppearance() {
       s.glass_background === "gradient" ? gradientPicker(s) : null,
       h("div", {class: "row"}, "Background", bg, s.glass_background !== "wallpaper" ? gcol : null, h("button", {class: "btn", on: {click: () => wpIn.click()}}, s.has_wallpaper ? "Change wallpaper" : "Upload wallpaper"), wpIn),
       h("label", {class: "row"}, reduce, "Reduce transparency (solid panels; easier on slower PCs)")),
+    S && S.app && S.app.desktop ? windowCard() : null,
     h("div", {class: "row"}, h("button", {class: "btn", id: "ap-edit", on: {click: () => openThemeEditor()}}, "Make a custom theme"),
       h("button", {class: "btn", id: "ap-import", on: {click: importTheme}}, "Import theme"),
       s.theme.startsWith("custom:") ? h("button", {class: "btn", on: {click: () => openThemeEditor(s.theme.slice(7))}}, "Edit this theme") : null,
       s.theme.startsWith("custom:") ? h("button", {class: "btn", on: {click: () => exportTheme(s.theme.slice(7))}}, "Export") : null,
       s.theme.startsWith("custom:") ? h("button", {class: "btn bad", on: {click: () => { if (confirm("Delete this custom theme?")) saveAppearance({delete_custom: s.theme.slice(7)}, "Deleted"); }}}, "Delete") : null));
+}
+function windowCard() {  // the desktop app: what closing the window does, and starting with Windows
+  const box = h("div", {class: "card", id: "ap-window"}, h("b", {}, "Window"), h("div", {class: "muted small"}, "Loading…"));
+  api("/api/setup?light=1").then(d => {
+    const sel = h("select", {id: "ap-close", on: {change: e => api("/api/app_settings", {close_action: e.target.value}).then(() => toast("Saved")).catch(er => toast(er.message, true))}},
+      opt("ask", "Ask me each time"), opt("tray", "Keep running in the tray"), opt("quit", "Quit AI Bridge")); sel.value = d.close_action;
+    const auto = d.desktop.autostart_supported ? h("label", {class: "row"}, h("input", {type: "checkbox", id: "ap-autostart", checked: d.desktop.autostart,
+      on: {change: e => api("/api/desktop", {action: "autostart", on: e.target.checked}).then(r => toast(r.autostart ? "Starts with Windows" : "Won't start with Windows")).catch(er => toast(er.message, true))}}), "Start AI Bridge when Windows starts (in the tray)") : null;
+    put(box, h("b", {}, "Window"), h("div", {class: "row"}, "When I close the window", sel), auto);
+  }).catch(() => {});
+  return box;
 }
 function openThemeEditor(name) {
   const existing = name ? (AP.s.custom || []).find(t => t.name === name) : null;
@@ -969,7 +1004,8 @@ function render() {
   showDesktopNotices();
   renderHeader(); renderBanners(); renderTask(); renderChat(); renderApprovals(); renderDisagreements(); renderReportCard(); renderBoard(); renderLog(); renderActivity(); renderSettingsLive(); memBadge();
   if (ui.tab === "files") loadFiles(false);
-  if (!ui.autoOpened && S.session.status === "idle" && S.transcript.total === 0) { ui.autoOpened = true; openNewSession(); }
+  if (!ui.wizardChecked && S.app) { ui.wizardChecked = true; if (!S.app.setup_done && !S.app.demo) { ui.autoOpened = true; let st = 0; try { st = +prefs.get("wzStep") || 0; } catch (e) {} openWizard(st); } }
+  if (!ui.autoOpened && !ui.wizardOpen && S.session.status === "idle" && S.transcript.total === 0) { ui.autoOpened = true; openNewSession(); }
   const n = S.pending.length;
   document.title = (n ? `(${n}) Approval needed · ` : "") + "AI Bridge";
 }
@@ -1126,6 +1162,7 @@ function renderHeader() {
     h("div", {class: "hgrp hctl"}, ctl),
     h("span", {class: "grow"}),
     h("div", {class: "hgrp hright"}, style, lead, mode, models,
+      h("button", {class: "btn ghost gear", id: "btn-help", title: "How to use", "aria-label": "How to use", on: {click: () => openGuide()}}, ic("help")),
       h("button", {class: "btn ghost gear", id: "btn-settings", title: "Settings (app-wide)", "aria-label": "Settings", on: {click: () => openSettings()}}, ic("gear"))));
 }
 function renderBanners() {
@@ -1398,14 +1435,15 @@ function setActSeg(v) {
 /* ---------- app settings page ---------- */
 const SP_SECTIONS = [["appearance", "palette", "Appearance"], ["notify", "chat", "Discord & alerts"], ["ai", "bot", "AI models & sign-in"],
   ["usage", "gauge", "Usage limits"], ["images", "image", "ChatGPT images"], ["skills", "puzzle", "Skills library"], ["connectors", "plug", "Connectors"],
-  ["commands", "keyboard", "Your commands"], ["playbooks", "book", "Playbooks"], ["safety", "shield", "How safety works"]];
+  ["commands", "keyboard", "Your commands"], ["playbooks", "book", "Playbooks"], ["safety", "shield", "How safety works"], ["guide", "help", "How to use"]];
 function openSettings(sec) {
   $("#setpage").hidden = false; document.body.classList.add("noscroll");
   showSection(sec || prefs.get("spSec") || "appearance");
   loadSkills();
   setTimeout(() => $("#sp-search").focus({preventScroll: true}), 30);
 }
-function closeSettings() { $("#setpage").hidden = true; document.body.classList.remove("noscroll"); $("#sp-search").value = ""; filterSettings(""); }
+function closeSettings() { $("#setpage").hidden = true; document.body.classList.remove("noscroll"); $("#sp-search").value = ""; filterSettings("");
+  if (ui.wizardResume !== undefined && ui.wizardResume !== null) { const st = ui.wizardResume; ui.wizardResume = null; WZ.info = null; WZ.conn = null; openWizard(st); } }
 function showSection(sec) {
   if (!SP_SECTIONS.some(x => x[0] === sec)) sec = "appearance";
   prefs.set("spSec", sec);
@@ -2025,7 +2063,8 @@ function buildSettings() {
   const sec = (id, intro, ...kids) => { const [, , title] = SP_SECTIONS.find(x => x[0] === id);
     return h("section", {class: "sp-sec", id: "sec-" + id, hidden: true}, h("h2", {}, title), intro ? h("p", {class: "muted sp-intro"}, intro) : null, ...kids); };
   const sub = (t, ...kids) => h("div", {class: "sp-card"}, t ? h("h3", {}, t) : null, ...kids);
-  put($("#sp-nav"), SP_SECTIONS.map(([id, ico, title]) => h("button", {class: "spn", id: "spn-" + id, on: {click: () => { $("#sp-search").value = ""; filterSettings(""); showSection(id); }}}, h("span", {class: "ico"}, ic(ico)), title)));
+  put($("#sp-nav"), SP_SECTIONS.map(([id, ico, title]) => h("button", {class: "spn", id: "spn-" + id, on: {click: () => { $("#sp-search").value = ""; filterSettings(""); showSection(id); }}}, h("span", {class: "ico"}, ic(ico)), title)),
+    h("div", {class: "spn-sep"}), h("button", {class: "spn", id: "spn-setup", on: {click: async () => { closeSettings(); try { await api("/api/setup", {action: "reset"}); } catch (e) {} WZ.info = null; WZ.conn = null; openWizard(0); }}}, h("span", {class: "ico"}, ic("refresh")), "Run setup again"));
   put($("#sp-content"),
     sec("appearance", "Themes, accent colour and Liquid Glass. Applies on every device you open AI Bridge on.", sub(null, ui.apNode)),
     sec("notify", "Your own Discord bot: approvals with buttons, the conversation, and control from your phone. It only takes orders from you.", sub(null, ui.ntNode)),
@@ -2046,6 +2085,7 @@ function buildSettings() {
     sec("connectors", "Add-ons: apps both AIs can use. Blender, Unity, Godot, GitHub, a web browser, Figma, Roblox Studio and Obsidian are ready to switch on, and you can add any other MCP server.", sub(null, ui.cxNode)),
     sec("commands", "Shortcuts you type with / in the message box.", sub(null, ui.ycNode)),
     sec("playbooks", "Saved session setups you start in one go: the task (with {blanks} you fill in), style, safety, turns, seats and skills. Pick one in New session, or type /play <name>: <blank>.", sub(null, ui.pbNode)),
+    sec("guide", "Everything you can do in AI Bridge, topic by topic.", sub(null, renderGuide())),
     sec("safety", null, sub(null,
       h("p", {}, h("b", {}, "Ask me first: "), "every file write, script run, outside-app change and Blender change stops for your yes or no."),
       h("p", {}, h("b", {}, "Hands-off: "), "no yes/no prompts, but everything else stays on: they can only touch their workspace and the apps you connected, can't see your keys or change app settings, the spending limit and usage limits apply, every file change is backed up, Pause / Stop / Emergency stop work instantly, and new or edited skills still ask."),
@@ -2069,6 +2109,302 @@ function renderSettingsLive() {
 }
 
 /* ---------- modal: new session ---------- */
+/* ---------- How to use (Settings > How to use) ---------- */
+// Each topic: [id, icon, title, lines]. A line starting with "- " is a bullet; `code` and **bold** work.
+const GUIDE = [
+  ["start", "play", "Getting started", [
+    "AI Bridge puts two AIs in one workspace. They talk to each other, plan on a shared board, write files and check each other's work, while you watch, jump in, and approve anything that changes your files.",
+    "- **1. Connect your AIs.** Settings > AI models & sign-in (or the setup wizard). Your Claude and ChatGPT plans work through Claude Code and Codex, so there's no per-message cost. API keys and free local AIs (Ollama, LM Studio) work too.",
+    "- **2. Start a session.** Press **New session**, type a task (or pick a playbook), pick a style and a safety mode, and press **Start**.",
+    "- **3. Watch and steer.** Messages appear in the chat. Type to talk to both AIs at any time. Approve or deny the changes they ask to make.",
+    "- **4. When it ends** you get a report card: what got done, which files changed, and what's still open.",
+    "Run the setup wizard again any time: Settings > Run setup again.",
+  ]],
+  ["sessions", "chat", "Sessions and styles", [
+    "A session is one run of the two AIs on a task, up to a turn limit (each AI reply is one turn). They stop early when both say they're done.",
+    "- **Free chat:** they just talk and build whatever comes up.",
+    "- **Discussion:** brainstorm and agree on a conclusion. They can't write or run anything.",
+    "- **Collaboration:** they split the task on the board, each does their part, then they review and combine.",
+    "- **Review:** one builds, the other checks the work and pushes back until it's solid. You pick who builds.",
+    "- **Parallel:** both work at the same time on different tasks, then combine.",
+    "In New session you also choose who speaks first, the turn limit, an optional opening message, separate jobs for each AI, a spending limit, and which AI sits in each seat (with its model and the name it goes by in the chat). Any pairing works: two Claudes, Claude + a local model, and so on.",
+    "Change things while it runs from the header: the style, the safety mode, and the models (from the next turn). **+6 turns** keeps a finished session going.",
+  ]],
+  ["safety", "shield", "Safety modes and approvals", [
+    "- **Ask me first** (the default): every file write, script run and add-on change shows an approval card with exactly what's about to happen. Approve or Deny. No answer counts as no.",
+    "- **Hands-off:** no prompts. Good once you trust the setup for low-stakes work.",
+    "- **Read-only:** they can talk, read and review, but can't change anything.",
+    "One gate covers both AIs, so neither can get around your \"no\" by asking the other. In Chat settings (click the chat name) you can also switch individual tools off for one AI in that chat: writing files, running scripts, editing the board, Blender.",
+    "The AIs can never edit the app's own files (settings, approvals, the transcript, the emergency-stop flag), and your keys are never shown to them.",
+  ]],
+  ["control", "pause", "Pause, stop and emergency stop", [
+    "- **Pause:** the AI that's mid-turn finishes, then nothing new starts. **Resume** carries on, **One turn** runs a single turn.",
+    "- **Stop:** finishes the current turn, then ends the session.",
+    "- **Emergency stop** (the red button): right away, every tool call is refused, no new AI call starts, and waiting approvals are denied. It can't undo what already ran (the Activity log shows what did). Start a new session or add turns to lift it.",
+    "If a plan's usage limit is hit or a local AI goes offline, the session pauses itself and carries on when it's back (Settings > Usage limits).",
+  ]],
+  ["talk", "chat", "Talking to the AIs", [
+    "Type in the message box at the bottom and press **Send** (Enter). Shift+Enter makes a new line.",
+    "- **Send** adds your message; whoever is working reads it after their current step.",
+    "- **Send now** (Ctrl+Enter) interrupts the current turn and delivers it immediately.",
+    "- When the session is paused, the next AI answers once and it stays paused. When it's finished, it gets two more turns.",
+    "- **Images:** paste a screenshot (Ctrl+V), drag one in, or use the paperclip. Up to 4 per message; both AIs see it. They can share images with each other too.",
+    "- `/claude <message>` or `/gpt <message>` talks to just one of them.",
+  ]],
+  ["commands", "keyboard", "Slash commands", [
+    "Type `/` in the message box to see them all (with arrow keys and Tab to pick). The main ones:",
+    "- `/pause` `/resume` `/step` `/stop` · `/turns 20` or `/turns +5`",
+    "- `/style review gpt` · `/mode ask` / `hands-off` / `readonly` · `/model claude claude-opus-5-5` · `/task <text>` · `/assign gpt <job>`",
+    "- `/play Bug hunt: <the error>` · `/playbooks` · `/report` · `/decide 2 claude`",
+    "- `/undo` (last file change, or `/undo 3`) · `/shot` (screenshot from Roblox Studio or Blender)",
+    "- `/remember [global] <note>` · `/recall [global] <words>`",
+    "- `/new [name]` · `/switch <chat>` · `/fork [name]` · `/skill <name>` · `/skills` · `/help`",
+    "Make your own shortcuts in Settings > Your commands (a name that expands into a message or a command).",
+  ]],
+  ["chats", "folder", "Chats and projects", [
+    "Each chat has its own conversation, board, files and memory, like separate workspaces. Use **+ Chat** in the sidebar, `/new`, or `/fork` to copy the current one.",
+    "Group chats into **projects** with **+ Project**; chats in the same project can read each other (never change). The **⋯** menu on a chat renames it, moves it to a project, sets which other chats it may read, or deletes it (deleted chats go to a trash folder, not erased).",
+    "Click the chat name at the top for **Chat settings**: name and project, the skills on in this chat, what each AI may do here, a spending limit, project notes both AIs read (they can't edit them), and read access.",
+    "Switching chats while a session runs pauses it there; it resumes where it was when you come back.",
+  ]],
+  ["panel", "list", "The side panel: Board, Activity, Files, Memory", [
+    "- **Board:** the shared task list. The AIs add and claim tasks with owners, status and dependencies; you can add tasks too (**+ New task**).",
+    "- **Activity:** what each AI is doing right now, the recent tool calls (including refused ones), and **Decisions & log** with every approval and decision. **Last report card** opens the latest report again.",
+    "- **Files:** the chat's files. **Recent changes** shows every change the AIs made, with a diff, and **Undo** for each one. Every overwritten file is backed up first.",
+    "- **Memory:** long-term notes that carry over between sessions (goals, decisions, progress, lessons), for this chat and globally. You choose whether the AIs may change memory freely, only with your OK, or not at all, and every change can be rolled back.",
+    "Hide the panel with the arrow at its top right; drag its edge to resize it.",
+  ]],
+  ["disagree", "scale", "Disagreements", [
+    "When the two AIs can't settle something, they raise a disagreement instead of arguing in circles. A card shows both sides next to each other, each with its reasoning.",
+    "Pick a side (**Go with Claude / ChatGPT**), or type what you want instead and press **Decide**. Both follow your call and it's saved as a decision. **Later** folds the card away; they keep working on other things meanwhile. Also works from Discord or with `/decide`.",
+  ]],
+  ["reports", "report", "Report cards", [
+    "When a session ends, a report card pops up: how it ended, turns and time, tasks finished, files changed, decisions, disagreements, and per AI: replies, files, approvals, tokens and cost. Plus what's still open.",
+    "It's counted by the app itself (no AI writes it). Dismiss it, or open it again from Activity > Decisions & log or with `/report`.",
+  ]],
+  ["playbooks", "book", "Playbooks", [
+    "A playbook is a saved New session setup: the task (with **{blanks}** you fill in each time), style, safety mode, turns, the AIs in each seat and the skills to switch on.",
+    "Three come with the app: **Build a feature**, **Bug hunt** and **Brainstorm**. Pick one at the top of New session, fill in the blank and press Start.",
+    "Set a session up the way you like it and press **Save as playbook…**. Edit or delete them in Settings > Playbooks. Start one from the message box (or Discord) with `/play <name>: <blank>`.",
+  ]],
+  ["skills", "puzzle", "Skills", [
+    "Skills are instruction packs (a SKILL.md, optionally with files) that teach the AIs how to do something your way: a code style, a review checklist, a workflow.",
+    "Import them (zip, folder, or found on your PC) or write one in Settings > Skills library. Switch them on per chat for both AIs or one, with `/skill <name>`, or let a skill switch itself on when it fits.",
+    "The AIs can propose new skills, but adding or changing one always asks you first.",
+  ]],
+  ["addons", "plug", "Add-ons (connectors)", [
+    "Add-ons let both AIs use other apps. All optional; nothing is on until you switch it on in Settings > Connectors.",
+    "- Ready to switch on: **Blender**, **Roblox Studio**, **Unity**, **Godot**, **GitHub**, a **web browser** (Playwright), **Figma** and **Obsidian**. **Test connection** checks each one.",
+    "- **Add a connector** for any other MCP server: paste the config from its README, or fill in the form.",
+    "- Looking is allowed straight away; changing things follows your safety mode. Blender changes also need the other AI to review them first, and the scene is backed up before every change.",
+  ]],
+  ["ais", "bot", "AI models and connections", [
+    "Each seat can be Claude or ChatGPT on your plan (through Claude Code / Codex, signed in with your account), on an API key (billed per use), or any OpenAI-compatible AI: Ollama or LM Studio (free, on your PC), Gemini, OpenRouter or your own server (Settings > AI models > Other AIs).",
+    "- Pick the model per seat in New session (↻ refreshes the list). Settings > AI models > **Fetch from my accounts** lists exactly what your API keys can use.",
+    "- **Test connection** runs one tiny real turn so you see problems before you start.",
+    "- AI Bridge shows what a model can do (tools, images, memory size) and warns when a model can only talk.",
+    "- **ChatGPT images:** Codex can make images; choose whether it may do so freely, only when you ask, or never (Settings > ChatGPT images).",
+  ]],
+  ["discord", "chat", "Discord: control it from your phone", [
+    "Your own Discord bot (Settings > Discord & alerts, three steps):",
+    "- **Approval cards** with Approve / Deny buttons, so you can OK changes from anywhere.",
+    "- **Each chat gets a thread** mirroring the conversation. Type in the thread to talk to the AIs.",
+    "- **Commands:** `/status` `/tasks` `/summary` `/report` `/pause` `/resume` `/stop` `/emergency` `/undo` `/say`, and `/cmd` for any slash command.",
+    "- **Alerts:** session finished, waiting on you, something broke, usage limits, an AI looks stuck, optional progress check-ins, with quiet hours.",
+    "Only the Discord account that linked the bot is obeyed.",
+  ]],
+  ["money", "gauge", "Usage, limits and cost", [
+    "- On your plans there's no per-message cost; your plans' own usage limits apply. When one is hit, the session pauses and resumes by itself (Settings > Usage limits).",
+    "- On API keys, tokens are counted per AI and turned into an estimate. Set a spending limit (New session, or Chat settings) and the session pauses when it's reached.",
+    "- The cards under the task show what each AI is doing right now and what it has used so far.",
+  ]],
+  ["look", "palette", "Look and feel", [
+    "Settings > Appearance: Dark, Light, OLED Black, High contrast, or follow Windows light/dark. Pick an accent colour, make and share your own themes, and switch on **Liquid Glass** (frosted panels over a gradient, a solid colour or your own wallpaper), with a frost slider.",
+    "In the desktop app: choose what closing the window does (keep running in the tray, quit, or ask) and whether AI Bridge starts with Windows. The tray icon opens the window, pauses everything, or does an emergency stop.",
+  ]],
+  ["undo", "refresh", "Undo, backups and crash recovery", [
+    "- Every file the AIs change is backed up first and written safely; undo any change from Files > Recent changes or with `/undo`.",
+    "- If the app closes mid-session, the next start offers **Resume** or **Discard**. Resuming starts paused and never re-runs anything that may already have happened.",
+    "- Your chats, keys and settings live in your own data folder and are never touched by updates.",
+  ]],
+];
+function renderGuide() {
+  const q = h("input", {id: "guide-q", type: "search", placeholder: "Search the guide…", autocomplete: "off"});
+  const list = h("div", {class: "guide"});
+  const line = l => l.startsWith("- ") ? h("li", {}, fmt(l.slice(2))) : h("p", {}, fmt(l));
+  const draw = () => {
+    const t = q.value.trim().toLowerCase();
+    const topics = GUIDE.filter(([, , title, lines]) => !t || (title + " " + lines.join(" ")).toLowerCase().includes(t));
+    put(list, topics.length ? topics.map(([id, icon, title, lines]) => {
+      const body = []; let ul = null;
+      for (const l of lines) { if (l.startsWith("- ")) { if (!ul) { ul = h("ul", {}); body.push(ul); } ul.append(line(l)); } else { ul = null; body.push(line(l)); } }
+      return h("details", {class: "card guide-t", id: "guide-" + id, open: !!t || id === "start"}, h("summary", {}, ic(icon), h("b", {}, title)), h("div", {class: "guide-b"}, body));
+    }) : h("div", {class: "muted"}, "Nothing in the guide matches that."));
+  };
+  q.addEventListener("input", draw);
+  draw();
+  return h("div", {}, h("div", {class: "row", style: "margin-bottom:10px"}, q,
+    h("button", {class: "btn ghost small", on: {click: () => list.querySelectorAll("details").forEach(d => d.open = true)}}, "Open all"),
+    h("button", {class: "btn ghost small", on: {click: () => list.querySelectorAll("details").forEach(d => d.open = false)}}, "Close all")), list);
+}
+function openGuide(topic) { openSettings("guide"); if (topic) { const d = document.querySelector("#guide-" + topic); if (d) { d.open = true; d.scrollIntoView({block: "start"}); } } }
+
+/* ---------- first-run setup wizard ---------- */
+const WZ = {step: 0, info: null, busy: false, imported: null, tested: {}, keysSaved: false};
+const WZ_STEPS = ["welcome", "look", "ais", "import", "discord", "addons", "done"];
+function wzSteps() { return WZ_STEPS.filter(s => s !== "import" || (WZ.info && (WZ.info.old || WZ.imported))); }
+async function wzLoad() { try { WZ.info = await api("/api/setup"); } catch (e) { toast(e.message, true); } }
+async function openWizard(step) {
+  ui.wizardOpen = true; closeModal();
+  if (!$("#wizard")) document.body.append(h("div", {id: "wizard"}));
+  if (step !== undefined) WZ.step = step;
+  if (!AP.s) { try { AP.s = await api("/api/ui"); } catch (e) {} }
+  if (!WZ.info) { renderWizard(); await wzLoad(); }
+  try { prefs.set("wzStep", WZ.step); } catch (e) {}
+  renderWizard();
+}
+function closeWizard() { ui.wizardOpen = false; const w = $("#wizard"); if (w) w.remove(); }
+function wzGo(delta) { const st = wzSteps(), i = Math.max(0, st.indexOf(WZ_STEPS[WZ.step])); const nx = st[Math.min(st.length - 1, Math.max(0, i + delta))]; WZ.step = WZ_STEPS.indexOf(nx); try { prefs.set("wzStep", WZ.step); } catch (e) {} renderWizard(); }
+function wzAway(sec) {  // open a Settings page; the wizard comes back where it was when Settings closes
+  ui.wizardResume = WZ.step; closeWizard(); openSettings(sec);
+}
+async function wzAct(body, okMsg) {
+  if (WZ.busy) return; WZ.busy = true; renderWizard();
+  try { const r = await api("/api/setup", body); if (r && r.note) toast(r.note); else if (okMsg) toast(okMsg); return r; }
+  catch (e) { toast(e.message, true); }
+  finally { WZ.busy = false; renderWizard(); }
+}
+function wzAiReady() {
+  const a = WZ.info && WZ.info.agents;
+  return !!(a && (a.claude.signed_in || a.chatgpt.signed_in)) || WZ.keysSaved || !!(S && S.keys && (S.keys.anthropic || S.keys.openai)) || !!(S && (S.ai_profiles || []).length);
+}
+function renderWizard() {
+  const root = $("#wizard"); if (!root) return;
+  const st = wzSteps(), name = WZ_STEPS[WZ.step], idx = Math.max(0, st.indexOf(name));
+  const dots = h("div", {class: "wz-dots"}, st.map((s, i) => h("span", {class: "wz-dot" + (i <= idx ? " on" : "")})));
+  const back = idx > 0 ? h("button", {class: "btn ghost", id: "wz-back", on: {click: () => wzGo(-1)}}, "Back") : h("span");
+  const next = (label, opts = {}) => h("button", {class: "btn " + (opts.ghost ? "" : "primary"), id: opts.id || "wz-next", disabled: !!opts.disabled, on: {click: opts.click || (() => wzGo(1))}}, label);
+  const foot = (...right) => h("div", {class: "wz-foot"}, back, h("div", {class: "row"}, ...right));
+  let body;
+  if (name === "welcome") {
+    body = [h("img", {class: "wz-logo", src: "/icon.png", alt: ""}), h("h1", {}, "Welcome to AI Bridge"),
+      h("p", {class: "wz-sub"}, "Two AIs, one workspace. They plan, build and check each other's work, and you stay in charge of anything that changes your files."),
+      h("div", {class: "wz-feats"},
+        h("div", {class: "wz-feat"}, ic("chat"), h("b", {}, "They work together"), h("span", {}, "Claude, ChatGPT or a free local AI, in any pairing.")),
+        h("div", {class: "wz-feat"}, ic("shield"), h("b", {}, "You approve what matters"), h("span", {}, "File changes wait for your OK, and everything can be undone.")),
+        h("div", {class: "wz-feat"}, ic("plug"), h("b", {}, "Add-ons when you want them"), h("span", {}, "Blender, Unity, Roblox Studio, GitHub and more, all optional."))),
+      h("p", {class: "muted small"}, "This takes about two minutes. You can change everything later in Settings."),
+      h("div", {class: "wz-foot"}, h("button", {class: "btn ghost", id: "wz-skipall", on: {click: wzFinishLater}}, "Skip setup"), next("Get started"))];
+  } else if (name === "look") {
+    const s = AP.s || {theme: "dark", glass: false};
+    const card = (key, t) => h("div", {class: "tcard" + (s.theme === key ? " on" : ""), id: "wz-theme-" + key, on: {click: async () => { await saveAppearance({theme: key}); renderWizard(); }}}, swatch(t), t.label);
+    const glass = h("input", {type: "checkbox", id: "wz-glass", checked: !!s.glass, on: {change: async e => { await saveAppearance({glass: e.target.checked}); renderWizard(); }}});
+    body = [h("h1", {}, "Pick your look"), h("p", {class: "wz-sub"}, "Click one to try it. It changes right away."),
+      h("div", {class: "themes"}, Object.entries(THEMES).map(([k, t]) => card(k, t))),
+      h("div", {class: "card", style: "margin-top:12px"}, h("label", {class: "row"}, glass, h("b", {}, "Liquid Glass"), h("span", {class: "muted small"}, "frosted see-through panels over a colour gradient")),
+        s.glass && s.glass_background === "gradient" ? h("div", {class: "wz-grad"}, GRAD_PRESETS.map(([nm, list]) =>
+          h("button", {class: "gpreset" + (JSON.stringify(list) === JSON.stringify(s.glass_grad || ["", "", ""]) ? " on" : ""), title: nm, on: {click: async () => { await saveAppearance({glass_grad: list}); renderWizard(); }}},
+            h("span", {class: "gswatch", style: "background:linear-gradient(90deg," + (list[0] ? list.join(",") : "var(--accent),var(--claude),var(--gpt)") + ")"}), nm))) : null),
+      foot(next("Next"))];
+  } else if (name === "ais") {
+    const a = WZ.info && WZ.info.agents;
+    const row = (k, letter, cls) => {
+      const x = a && a[k];
+      if (!x) return h("div", {class: "wz-agent"}, h("span", {class: "wz-av " + cls}, letter), h("div", {}, h("b", {}, k === "claude" ? "Claude Code" : "Codex"), h("div", {class: "muted small"}, "Checking…")), h("span"));
+      const chip = x.signed_in ? h("span", {class: "chip st-good"}, "✓ Ready") : x.installed ? h("span", {class: "chip st-warn"}, "Not signed in") : h("span", {class: "chip"}, "Not installed");
+      const test = WZ.tested[k];
+      const btns = x.signed_in ? [h("button", {class: "btn", id: "wz-test-" + k, disabled: WZ.busy, on: {click: async () => { WZ.busy = true; renderWizard();
+            try { const r = await api("/api/backend_test", {agent: k}); WZ.tested[k] = r.ok ? "ok" : (r.error || "failed"); } catch (e) { WZ.tested[k] = e.message; } WZ.busy = false; renderWizard(); }}}, "Test connection")]
+        : x.installed ? [h("button", {class: "btn primary", id: "wz-signin-" + k, disabled: WZ.busy, on: {click: () => wzAct({action: "signin", agent: k})}}, "Sign in")]
+        : [h("button", {class: "btn primary", id: "wz-install-" + k, disabled: WZ.busy, on: {click: () => wzAct({action: "install", agent: k})}}, "Install")];
+      return h("div", {class: "wz-agent"}, h("span", {class: "wz-av " + cls}, letter),
+        h("div", {}, h("div", {class: "row", style: "gap:8px"}, h("b", {}, x.name), h("span", {class: "muted small"}, "by " + x.by), chip),
+          h("div", {class: "muted small"}, x.signed_in ? (test === "ok" ? "Test passed: it answered and used AI Bridge's tools." : test ? "Test failed: " + test : "Signed in. Run a quick test if you like.") : "Needs " + x.needs + "."),
+          !x.signed_in && x.installed ? h("div", {class: "muted small"}, "Sign in opens your browser. Come back here when it says you're signed in.") : null),
+        h("div", {class: "row"}, btns));
+    };
+    const kA = h("input", {id: "wz-key-anthropic", type: "password", placeholder: "Anthropic API key (sk-ant-…)", autocomplete: "off"});
+    const kO = h("input", {id: "wz-key-openai", type: "password", placeholder: "OpenAI API key (sk-…)", autocomplete: "off"});
+    const saveKeys = async () => { try { await api("/api/keys", {anthropic: kA.value, openai: kO.value}); WZ.keysSaved = true; toast("Keys saved on this PC"); await tick(true); renderWizard(); } catch (e) { toast(e.message, true); } };
+    const ol = a && a.ollama;
+    const other = h("details", {class: "card wz-more", open: !!WZ.moreOpen, on: {toggle: e => { WZ.moreOpen = e.target.open; }}}, h("summary", {}, h("b", {}, "Other ways to connect"), h("span", {class: "muted small"}, " API keys, or a free AI on your PC")),
+      h("div", {class: "muted small", style: "margin:8px 0 4px"}, "API keys bill per use on your Anthropic / OpenAI account. They're saved only on this PC and never shown to the AIs."),
+      h("div", {class: "grid2"}, kA, kO), h("div", {class: "row", style: "margin-top:6px"}, h("button", {class: "btn", id: "wz-savekeys", on: {click: saveKeys}}, "Save keys")),
+      h("div", {class: "wz-agent", style: "margin-top:10px"}, h("span", {class: "wz-av o"}, "O"),
+        h("div", {}, h("div", {class: "row", style: "gap:8px"}, h("b", {}, "Ollama"), h("span", {class: "muted small"}, "free, runs on your PC"), ol && ol.installed ? h("span", {class: "chip st-good"}, "✓ Installed") : null),
+          h("div", {class: "muted small"}, ol && ol.installed ? "Pick a model for it in Settings > AI models > Other AIs." : "Good for trying things out. Needs a decent graphics card for bigger models.")),
+        h("div", {class: "row"}, ol && ol.installed ? h("button", {class: "btn", on: {click: () => wzAway("ai")}}, "Add a model") : h("button", {class: "btn", id: "wz-install-ollama", disabled: WZ.busy, on: {click: () => wzAct({action: "install", agent: "ollama"})}}, "Install"))));
+    const ready = wzAiReady();
+    body = [h("h1", {}, "Connect your AIs"), h("p", {class: "wz-sub"}, "AI Bridge runs Claude and ChatGPT through their official apps, signed in with your own plans, so there's nothing extra to pay per message."),
+      h("div", {class: "wz-agents"}, row("claude", "C", "c"), row("chatgpt", "G", "g")),
+      h("div", {class: "row", style: "margin:8px 0 12px"}, h("button", {class: "btn ghost small", id: "wz-recheck", disabled: WZ.busy, on: {click: async () => { WZ.busy = true; renderWizard(); await wzLoad(); WZ.busy = false; renderWizard(); }}}, ic("refresh"), " Check again"),
+        h("span", {class: "muted small"}, "Installed or signed in somewhere else? Press Check again.")),
+      other,
+      foot(ready ? next("Next") : next("Skip for now", {ghost: true, id: "wz-skip-ais"}))];
+  } else if (name === "import") {
+    const o = WZ.info && WZ.info.old, done = WZ.imported;
+    const bits = o ? [o.chats + (o.chats === 1 ? " chat" : " chats"), o.memory ? "memory" : "", o.playbooks ? o.playbooks + (o.playbooks === 1 ? " playbook" : " playbooks") : "", o.skills ? o.skills + (o.skills === 1 ? " skill" : " skills") : "",
+      o.connectors ? "add-on settings" : "", o.discord ? "Discord bot" : "", o.keys.length ? o.keys.length + (o.keys.length === 1 ? " saved key" : " saved keys") : ""].filter(Boolean) : [];
+    body = [h("h1", {}, "Bring your stuff over"),
+      done ? h("div", {class: "card wz-okbox"}, ic("report"), h("div", {}, h("b", {}, "Done. Everything was copied in."),
+          h("div", {class: "muted small"}, "The old folder wasn't changed. " + (done.keys_added && done.keys_added.length ? "Keys brought over: " + done.keys_added.join(", ") + "." : ""))))
+        : [h("p", {class: "wz-sub"}, "Found an older AI Bridge on this PC:"),
+          h("div", {class: "card"}, h("div", {class: "row", style: "gap:8px"}, ic("folder"), h("code", {}, o ? o.path : "")), h("div", {class: "muted small", style: "margin-top:6px"}, bits.join(" · "))),
+          h("p", {class: "muted small"}, "This copies it in. The old folder stays exactly as it is, so nothing can be lost.")],
+      foot(done ? next("Next") : h("button", {class: "btn", id: "wz-noimport", on: {click: () => wzGo(1)}}, "Start fresh"),
+        done ? null : h("button", {class: "btn primary", id: "wz-do-import", disabled: WZ.busy, on: {click: async () => { const r = await wzAct({action: "import", path: o.path}); if (r && r.ok) { WZ.imported = r; await tick(true); renderWizard(); } }}}, WZ.busy ? "Copying…" : "Bring it over"))];
+  } else if (name === "discord") {
+    body = [h("h1", {}, "Control it from your phone"), h("p", {class: "wz-sub"}, "Optional. Your own Discord bot lets you keep an eye on things while you're away."),
+      h("div", {class: "wz-feats"},
+        h("div", {class: "wz-feat"}, ic("alert"), h("b", {}, "Approve from anywhere"), h("span", {}, "Approval cards with Approve / Deny buttons.")),
+        h("div", {class: "wz-feat"}, ic("chat"), h("b", {}, "Follow the chat"), h("span", {}, "Each chat gets a thread. Type there to talk to the AIs.")),
+        h("div", {class: "wz-feat"}, ic("stop"), h("b", {}, "Stay in control"), h("span", {}, "Pause, stop, undo. Only your account is obeyed."))),
+      h("p", {class: "muted small"}, "Setting it up takes about 2 minutes and needs a computer for the first step."),
+      foot(next("Later", {ghost: true, id: "wz-discord-later"}), h("button", {class: "btn primary", id: "wz-discord-now", on: {click: () => wzAway("notify")}}, "Set it up now"))];
+  } else if (name === "addons") {
+    if (!WZ.conn) { api("/api/connectors").then(d => { WZ.conn = d; renderWizard(); }).catch(() => {}); }
+    if (WZ.blender === undefined) { api("/api/app_settings").then(d => { WZ.blender = !!d.blender; renderWizard(); }).catch(() => {}); }
+    const items = WZ.conn ? Object.entries(WZ.conn) : [];
+    const toggle = async (nm, on) => { try { await api("/api/connectors", {name: nm, enabled: on}); WZ.conn = await api("/api/connectors"); renderWizard(); } catch (e) { toast(e.message, true); } };
+    body = [h("h1", {}, "Add-ons"), h("p", {class: "wz-sub"}, "Apps both AIs can use. All optional, and nothing is on until you switch it on."),
+      h("div", {class: "wz-addons"},
+        h("label", {class: "wz-addon"}, h("input", {type: "checkbox", id: "wz-addon-blender", checked: !!WZ.blender, on: {change: async e => { try { await api("/api/app_settings", {blender: e.target.checked}); WZ.blender = e.target.checked; } catch (er) { toast(er.message, true); } }}}),
+          h("div", {}, h("b", {}, "Blender"), h("div", {class: "muted small"}, "3D scenes, with an extra review step before any change."))),
+        items.filter(([, c]) => !c.custom).map(([nm, c]) => h("div", {class: "wz-addon"},
+          h("input", {type: "checkbox", id: "wz-addon-" + nm, checked: c.enabled, on: {change: e => toggle(nm, e.target.checked)}}),
+          h("div", {class: "grow"}, h("b", {}, c.label), h("div", {class: "muted small"}, c.blurb || "")),
+          c.missing && c.missing.length ? h("button", {class: "btn small", on: {click: () => wzAway("connectors")}}, "Set up") : null))),
+      h("p", {class: "muted small"}, "More, including any other MCP server: Settings > Connectors."),
+      foot(next("Next"))];
+  } else {
+    const d = WZ.info && WZ.info.desktop;
+    const auto = d && d.autostart_supported ? h("label", {class: "row"}, h("input", {type: "checkbox", id: "wz-autostart", checked: !!d.autostart, on: {change: async e => { try { const r = await api("/api/desktop", {action: "autostart", on: e.target.checked}); d.autostart = r.autostart; } catch (er) { toast(er.message, true); } }}}),
+      "Start AI Bridge when Windows starts (in the tray)") : null;
+    const ca = WZ.info ? WZ.info.close_action : "ask";
+    const close = d && d.window ? h("div", {class: "card"}, h("b", {}, "When I close the window"),
+      h("div", {class: "wz-radios"}, [["ask", "Ask me each time"], ["tray", "Keep running in the tray"], ["quit", "Quit AI Bridge"]].map(([v, l]) =>
+        h("label", {class: "row"}, h("input", {type: "radio", name: "wz-close", value: v, checked: ca === v, on: {change: async () => { try { await api("/api/app_settings", {close_action: v}); WZ.info.close_action = v; } catch (er) { toast(er.message, true); } }}}), l)))) : null;
+    body = [h("div", {class: "wz-logo"}, "✓"), h("h1", {}, "You're all set"),
+      h("p", {class: "wz-sub"}, "Start a session and give them something to do. A playbook is the quickest way in."),
+      h("p", {class: "muted small"}, "Everything you can do is explained in ", h("a", {href: "#", id: "wz-guide", on: {click: async e => { e.preventDefault(); await wzFinish(); openGuide(); }}}, "How to use"), " (the ? button at the top, any time)."),
+      auto, close,
+      h("div", {class: "wz-foot"}, back, h("div", {class: "row"}, h("button", {class: "btn", id: "wz-finish", on: {click: wzFinish}}, "Finish"),
+        h("button", {class: "btn primary", id: "wz-start", on: {click: async () => { await wzFinish(); const list = await loadPlaybooks(); const pb = list.find(x => x.name === "Build a feature"); openNewSession(pb ? pbForm(pb) : undefined); }}}, "Start your first session")))];
+  }
+  put(root, h("div", {class: "wz", id: "wz-" + name}, dots, ...[].concat(body)));
+}
+async function wzFinish() { try { await api("/api/setup", {action: "done"}); } catch (e) {} if (S && S.app) S.app.setup_done = true; closeWizard(); }
+async function wzFinishLater() { await wzFinish(); toast("You can run setup again any time: Settings > Run setup again."); }
+window.askClose = () => {  // the desktop app asks this when you close the window
+  const rem = h("input", {type: "checkbox", id: "close-remember"});
+  const go = async choice => { try { await api("/api/desktop", {action: "close", choice, remember: rem.checked}); } catch (e) { toast(e.message, true); } closeModal(); };
+  showModal(h("div", {class: "sheet", id: "closeask", style: "max-width:460px"}, h("h2", {}, "Close AI Bridge?"),
+    h("p", {class: "muted"}, "Keep it running in the tray and sessions keep going, approvals still reach Discord, and it opens instantly next time."),
+    h("label", {class: "row"}, rem, "Remember my choice (change it in Settings > Appearance)"),
+    h("div", {class: "row", style: "justify-content:flex-end;margin-top:14px"}, h("button", {class: "btn", id: "close-quit", on: {click: () => go("quit")}}, "Quit"),
+      h("button", {class: "btn primary", id: "close-tray", on: {click: () => go("tray")}}, "Keep running"))));
+};
+
 function showModal(node) { $("#modal").replaceChildren(node); $("#modal").classList.add("on"); }
 function closeModal() { $("#modal").classList.remove("on"); $("#modal").replaceChildren(); }
 const PB_TO_FORM = {start_paused: "paused", budget_usd: "budget"};
@@ -2144,7 +2480,7 @@ function openNewSession(over) {
     const body = {task: fillBlanks(task.value), opener: fillBlanks(opener.value), ...(over && over.skills ? {skills: over.skills} : {}), first: first.value, turns: +turns.value || 12, style: val("style"), lead: lead.value, mode: val("mode"), task_claude: tC.value, task_chatgpt: tG.value,
                   fresh: fresh.checked, start_paused: paused.checked, budget_usd: budget.value === "" ? undefined : +budget.value, ...seatBody, ...(S && S.chat ? {} : {memory_project: memSel.value}), memory_autoload: memAuto.checked};
     try { await api("/api/start", body); } catch (e) { toast(e.message, true); return; }
-    prefs.save({first: body.first, turns: body.turns, style: body.style, lead: body.lead, ...seatBody});
+    prefs.save({...prefs.load(), first: body.first, turns: body.turns, style: body.style, lead: body.lead, ...seatBody});
     closeModal(); ui.chatKey = ""; ui.hdrKey = ""; ui.boardKey = ""; ui.logKey = ""; ui.banKey = ""; ui.budFilled = false; await tick(true); renderConn();
   };
   // ---- save the form as a playbook (new, or replace one with the same name)
