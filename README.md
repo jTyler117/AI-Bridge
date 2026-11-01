@@ -307,6 +307,6 @@ Anthropic, OpenAI or any of them.
 
 Tested end to end against fake models, a fake Blender, a fake OpenAI-compatible server (standing in for Ollama), a fake Discord, and
 the demo mode (`python tests/selftest.py`), including budget pauses, emergency stop, crash recovery, kill-mid-write, permission-bypass
-attempts and forged Discord buttons; and for real on Windows with Claude Code + Codex on their plans and the Roblox Studio connector.
-**Not** tested yet with: live Anthropic/OpenAI API keys, a real Ollama / LM Studio, a real Discord bot, a real Blender session, or a
-packaged Windows build on other PCs.
+attempts and forged Discord buttons; and for real on Windows with Claude Code + Codex on their plans, the Blender and Roblox Studio
+connectors, and the installer + setup wizard.
+**Not** tested yet with: live Anthropic/OpenAI API keys, a real Ollama / LM Studio, a real Discord bot, or the installer on other PCs.
