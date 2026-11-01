@@ -1,0 +1,6 @@
+anthropic>=0.40
+openai>=1.50
+mcp>=1.2
+python-dotenv>=1.0
+# optional: pillow  (shrinks very large screenshots automatically)
+discord.py>=2.3     # the Discord bot (notifications + remote control)

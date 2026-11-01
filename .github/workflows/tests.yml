@@ -1,0 +1,41 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  selftest:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - run: python tests/selftest.py
+        timeout-minutes: 30
+
+  ui:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: pip install -r requirements.txt
+      - run: npm install playwright@1 && npx playwright install --with-deps chromium
+      - name: UI smoke test
+        shell: bash
+        run: |
+          export BRIDGE_WORKSPACE=$(mktemp -d)
+          python aibridge/app.py --demo --no-browser --port 8791 &
+          sleep 5
+          node tests/ui_smoke.js http://127.0.0.1:8791

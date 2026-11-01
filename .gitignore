@@ -1,0 +1,32 @@
+# Your keys and your data: never commit these
+.env
+workspace/
+*.flag
+
+# Python / build output
+.venv/
+venv/
+__pycache__/
+*.pyc
+build/
+dist/
+*.spec
+
+# Node (only for the optional UI test)
+node_modules/
+
+# Leftovers from updates and local tools
+_update_backups/
+_to_delete/
+_claude_*
+update.zip
+update.bat
+*_log.txt
+*.log
+
+# OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
