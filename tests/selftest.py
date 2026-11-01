@@ -1,3 +1,6 @@
+# AI Bridge: two AIs, one workspace.
+# Copyright (C) 2026 Tyler Watson
+# SPDX-License-Identifier: GPL-3.0-or-later  (see LICENSE)
 """Self-test. Needs NO API keys and NO Blender: it spins up a fake Blender socket server
 and fake model clients, then checks every safeguard. Run:  python tests/selftest.py
 """

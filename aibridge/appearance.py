@@ -1,3 +1,6 @@
+# AI Bridge: two AIs, one workspace.
+# Copyright (C) 2026 Tyler Watson
+# SPDX-License-Identifier: GPL-3.0-or-later  (see LICENSE)
 """Appearance: themes, accent colour, Liquid Glass and custom themes. Shared by every chat and every device (phone remote).
 
 Theme files are DATA ONLY: a name, a few colours, a corner radius and a font from a fixed list. Anything else in an

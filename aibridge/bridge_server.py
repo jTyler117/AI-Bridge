@@ -1,3 +1,6 @@
+# AI Bridge: two AIs, one workspace.
+# Copyright (C) 2026 Tyler Watson
+# SPDX-License-Identifier: GPL-3.0-or-later  (see LICENSE)
 """MCP bridge server.
 
 --side claude   : for Claude Desktop / Claude Code. Exposes `ask_chatgpt` + the shared tools (acting as Claude).

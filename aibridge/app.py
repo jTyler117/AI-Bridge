@@ -1,3 +1,6 @@
+# AI Bridge: two AIs, one workspace.
+# Copyright (C) 2026 Tyler Watson
+# SPDX-License-Identifier: GPL-3.0-or-later  (see LICENSE)
 """AI Bridge app: a local window where Claude and ChatGPT talk and build together while you watch.
 
     python aibridge/app.py              # opens the app in your browser
@@ -1434,7 +1437,9 @@ class App:
 
     # ---- first-run setup (the setup wizard) ----
     def app_info(self):
-        return {"setup_done": onboarding.done(), "desktop": self.desktop is not None, "frozen": onboarding.is_frozen(), "demo": self.demo}
+        import version
+        return {"setup_done": onboarding.done(), "desktop": self.desktop is not None, "frozen": onboarding.is_frozen(), "demo": self.demo,
+                "version": version.__version__, "copyright": version.COPYRIGHT}
 
     def setup_get(self, light=False):
         """light=True skips the slow parts (asking each agent's CLI whether it's signed in, looking for an older install)."""

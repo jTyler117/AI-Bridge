@@ -1,3 +1,6 @@
+# AI Bridge: two AIs, one workspace.
+# Copyright (C) 2026 Tyler Watson
+# SPDX-License-Identifier: GPL-3.0-or-later  (see LICENSE)
 """A stand-in for the `claude` and `codex` CLIs, used ONLY by selftest.py.
 
 It records how it was called, then does what the real CLIs do in subscription mode: start the MCP tool server named in

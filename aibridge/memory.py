@@ -1,3 +1,6 @@
+# AI Bridge: two AIs, one workspace.
+# Copyright (C) 2026 Tyler Watson
+# SPDX-License-Identifier: GPL-3.0-or-later  (see LICENSE)
 """Project Memory: long-term notes that both AIs (and you) share across sessions. Local files only, no external service.
 
 Layout (all under <workspace>/memory/, which "new session" never wipes):

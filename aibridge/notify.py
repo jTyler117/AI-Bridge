@@ -1,3 +1,6 @@
+# AI Bridge: two AIs, one workspace.
+# Copyright (C) 2026 Tyler Watson
+# SPDX-License-Identifier: GPL-3.0-or-later  (see LICENSE)
 """Notifications: tell you when something happens, in Discord (through the AI Bridge bot) and on this PC.
 
 The Discord side lives in discord_bot.py: it registers itself here as a "sink" while the bot is online and linked.

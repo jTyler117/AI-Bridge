@@ -1,3 +1,4 @@
+// AI Bridge · Copyright (C) 2026 Tyler Watson · SPDX-License-Identifier: GPL-3.0-or-later
 // Optional dev test: drives the REAL page in a real browser (Chromium via Playwright), against the demo AIs.
 // Needs Node 18+ and Playwright:  npm install playwright   (then  npx playwright install chromium  once)
 // Terminal 1:  python aibridge/app.py --demo --no-browser --port 8791      (use a fresh workspace: set BRIDGE_WORKSPACE to an empty folder)

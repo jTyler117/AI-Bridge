@@ -1,3 +1,6 @@
+# AI Bridge: two AIs, one workspace.
+# Copyright (C) 2026 Tyler Watson
+# SPDX-License-Identifier: GPL-3.0-or-later  (see LICENSE)
 """Shared images: screenshots you paste into the chat, and screenshots the two AIs send each other.
 
 Everything lives in <workspace>/images/ with a small index. Images are DATA: they are shown to the AIs as pictures, any text

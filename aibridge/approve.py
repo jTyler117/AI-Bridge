@@ -1,3 +1,6 @@
+# AI Bridge: two AIs, one workspace.
+# Copyright (C) 2026 Tyler Watson
+# SPDX-License-Identifier: GPL-3.0-or-later  (see LICENSE)
 """Approve or deny what the AIs ask to do, from a second terminal.
 
 Use this when the bridge runs in "approval" mode and nobody is sitting at the relay's terminal

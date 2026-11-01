@@ -1,3 +1,6 @@
+# AI Bridge: two AIs, one workspace.
+# Copyright (C) 2026 Tyler Watson
+# SPDX-License-Identifier: GPL-3.0-or-later  (see LICENSE)
 """Subscription mode: run Claude and ChatGPT through the official CLIs you're already signed in to
 (Claude Code and the OpenAI Codex CLI), so usage comes out of your Claude / ChatGPT plan instead of per-token API billing.
 

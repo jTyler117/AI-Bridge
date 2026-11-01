@@ -1,3 +1,6 @@
+# AI Bridge: two AIs, one workspace.
+# Copyright (C) 2026 Tyler Watson
+# SPDX-License-Identifier: GPL-3.0-or-later  (see LICENSE)
 """More AIs: run either seat on any OpenAI-compatible server, not only Claude and ChatGPT.
 
 Profiles (Settings > AI models & sign-in > Other AIs) are saved in <data>/ai_profiles.json (app-owned; the AIs can't

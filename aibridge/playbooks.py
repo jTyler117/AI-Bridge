@@ -1,3 +1,6 @@
+# AI Bridge: two AIs, one workspace.
+# Copyright (C) 2026 Tyler Watson
+# SPDX-License-Identifier: GPL-3.0-or-later  (see LICENSE)
 """Playbooks: saved session setups you start in one go ("Bug hunt", "Build a feature", ...).
 
 A playbook is a New session form, saved: the task (with {blanks} you fill in when you start it), style, safety mode,

@@ -1,3 +1,6 @@
+# AI Bridge: two AIs, one workspace.
+# Copyright (C) 2026 Tyler Watson
+# SPDX-License-Identifier: GPL-3.0-or-later  (see LICENSE)
 """The desktop shell: AI Bridge in its own window, with a tray icon, instead of a browser tab.
 
     python aibridge/app.py --window      (the installed app always starts this way)

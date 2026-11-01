@@ -1,3 +1,4 @@
+# AI Bridge · Copyright (C) 2026 Tyler Watson · SPDX-License-Identifier: GPL-3.0-or-later
 # PyInstaller recipe for the Windows app.   Build with:  packaging\build_windows.bat
 # One folder (dist\AI Bridge\) instead of one big .exe: it starts faster and antivirus tools like it better.
 # The installer (installer.iss) packs that folder up.

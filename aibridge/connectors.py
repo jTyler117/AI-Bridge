@@ -1,3 +1,6 @@
+# AI Bridge: two AIs, one workspace.
+# Copyright (C) 2026 Tyler Watson
+# SPDX-License-Identifier: GPL-3.0-or-later  (see LICENSE)
 """Connectors: let both AIs use outside MCP servers (Roblox Studio, Obsidian, ...) through AI Bridge.
 
 Every call goes through AI Bridge's own guard rails, exactly like the built-in tools:

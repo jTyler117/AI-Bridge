@@ -1,4 +1,5 @@
 <!doctype html>
+<!-- AI Bridge · Copyright (C) 2026 Tyler Watson · SPDX-License-Identifier: GPL-3.0-or-later (see LICENSE) -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -2243,9 +2244,12 @@ function renderGuide() {
   };
   q.addEventListener("input", draw);
   draw();
+  const about = h("p", {class: "muted small", id: "guide-about", style: "margin-top:14px"},
+    `AI Bridge ${(S && S.app && S.app.version) || ""} · ${(S && S.app && S.app.copyright) || "Copyright (C) 2026 Tyler Watson"} · `,
+    "Free software under the GNU GPL v3 (or later): you may share and change it under its terms. It comes with ABSOLUTELY NO WARRANTY.");
   return h("div", {}, h("div", {class: "row", style: "margin-bottom:10px"}, q,
     h("button", {class: "btn ghost small", on: {click: () => list.querySelectorAll("details").forEach(d => d.open = true)}}, "Open all"),
-    h("button", {class: "btn ghost small", on: {click: () => list.querySelectorAll("details").forEach(d => d.open = false)}}, "Close all")), list);
+    h("button", {class: "btn ghost small", on: {click: () => list.querySelectorAll("details").forEach(d => d.open = false)}}, "Close all")), list, about);
 }
 function openGuide(topic) { openSettings("guide"); if (topic) { const d = document.querySelector("#guide-" + topic); if (d) { d.open = true; d.scrollIntoView({block: "start"}); } } }
 

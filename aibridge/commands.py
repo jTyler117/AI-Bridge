@@ -1,3 +1,6 @@
+# AI Bridge: two AIs, one workspace.
+# Copyright (C) 2026 Tyler Watson
+# SPDX-License-Identifier: GPL-3.0-or-later  (see LICENSE)
 """Slash commands: quick controls you type in the message box (/pause, /claude fix the login bug, /undo, ...).
 
 HUMAN ONLY. They are run only for what YOU send from the app or a paired phone. An AI writing "/stop" in a message is
