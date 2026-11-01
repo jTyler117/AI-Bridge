@@ -3131,7 +3131,28 @@ def selftest_setup():
             dk = desktop.Desktop(a)
             dk.window = FakeWin()
             app.app_settings_save({"close_action": "ask"})
-            check("desktop: closing the window doesn't close it; it asks you, in the app's own dialog", dk._on_closing() is False and any("askClose" in c for c in dk.window.calls))
+            kept = dk._on_closing() is False
+            time.sleep(0.3)
+            check("desktop: closing the window doesn't close it; it asks you, in the app's own dialog", kept and any("askClose" in c for c in dk.window.calls))
+
+            class BlockingWin(FakeWin):  # like the real window: evaluate_js waits for the window's own thread
+                def __init__(self):
+                    super().__init__()
+                    self.handler_thread = None
+
+                def evaluate_js(self, js):
+                    if threading.current_thread() is self.handler_thread:
+                        raise RuntimeError("deadlock: evaluate_js called from the window's own thread")
+                    self.calls.append("js:" + js)
+
+            dkb = desktop.Desktop(a)
+            dkb.window = BlockingWin()
+            dkb.window.handler_thread = threading.current_thread()
+            dkb._on_closing()
+            time.sleep(0.3)
+            check("desktop: the close question is asked from another thread, so the window can't freeze waiting on itself",
+                  any("askClose" in c for c in dkb.window.calls) and not dkb.hidden)
+            a.desktop = dk  # back to the first stand-in for the checks below
             app.app_settings_save({"close_action": "tray"})
             dk._on_closing()
             time.sleep(0.3)

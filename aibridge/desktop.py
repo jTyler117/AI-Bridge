@@ -178,11 +178,17 @@ class Desktop:
         if action == "tray":
             threading.Thread(target=self.hide, daemon=True).start()
             return False
-        try:  # "ask": the page shows the choice (an in-app dialog in the current theme, not a Windows box)
+        # "ask": the page shows the choice (an in-app dialog in the current theme, not a Windows box). This handler runs on the
+        # window's own thread, and evaluate_js waits for that same thread, so calling it here would freeze the window:
+        # ask from another thread and let the close be cancelled right away.
+        threading.Thread(target=self._ask_page, daemon=True).start()
+        return False
+
+    def _ask_page(self):
+        try:
             self.window.evaluate_js("window.askClose && window.askClose()")
         except Exception:
-            threading.Thread(target=self.hide, daemon=True).start()
-        return False
+            self.hide()
 
     # ---- tray ----
     def _notify(self, title, text):
@@ -275,3 +281,16 @@ class Desktop:
             webview.start(private_mode=False, storage_path=str(core.ROOT / "webview"), icon=str(icon_path() or "") or None)
         finally:
             self.quit()
+            _hard_exit()
+
+
+def _hard_exit():
+    """Leave without Python's normal shutdown. The window (WebView2 through .NET) and the tray icon run their own native
+    threads; tearing the interpreter down underneath them is what made closing the app crash. Everything that matters
+    (the session, Discord, files) has already been stopped and saved by quit()."""
+    try:
+        sys.stdout.flush()
+        sys.stderr.flush()
+    except Exception:
+        pass
+    os._exit(0)

@@ -1932,6 +1932,11 @@ def _log_to_file():
         sys.stdout = fh
     if sys.stderr is None:
         sys.stderr = fh
+    try:  # a crash below Python (the window or tray layer) still leaves a trace in the log
+        import faulthandler
+        faulthandler.enable(file=fh, all_threads=True)
+    except Exception:
+        pass
 
 
 def main():
